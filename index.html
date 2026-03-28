@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>This is 50. A Yardage Book for the Boys</title>
-    <!-- Tailwind CDN - Requires Internet Connection to load styles -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
         
-        body { font-family: 'Inter', sans-serif; background-color: #f5f5f4; }
+        body { font-family: 'Inter', sans-serif; background-color: #f5f5f4; -webkit-tap-highlight-color: transparent; }
         .serif { font-family: 'Playfair+Display', serif; }
         
-        /* Fixed styling for local execution compatibility */
-        .course-tab { transition: all 0.2s ease; border-bottom: 3px solid transparent; cursor: pointer; border-radius: 0; }
+        .course-tab { transition: all 0.2s ease; border-bottom: 3px solid transparent; cursor: pointer; }
         .tab-active { 
             border-bottom: 3px solid #166534 !important; 
             color: #166534 !important; 
@@ -23,351 +21,371 @@
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; margin: 0; 
+        }
     </style>
 </head>
-<body class="text-stone-900">
+<body class="text-stone-900 pb-20">
 
+    <!-- Header -->
     <header class="bg-stone-900 text-white py-10 px-6 text-center shadow-2xl relative overflow-hidden">
         <div class="relative z-10">
-            <h1 class="serif text-3xl md:text-5xl mb-2">This is 50. A Yardage Book for the Boys</h1>
-            <p class="text-stone-400 tracking-[0.2em] uppercase text-xs font-semibold">144 Holes • Scotland & Ireland Elite Tour</p>
+            <h1 class="serif text-4xl md:text-5xl mb-2 italic">This is 50.</h1>
+            <p class="text-stone-400 tracking-[0.2em] uppercase text-[10px] font-bold">The Scotland & Ireland Elite Tour Ledger</p>
         </div>
-        <div class="absolute inset-0 opacity-10 bg-stone-800 bg-[url('https://www.transparenttextures.com/patterns/grass.png')]"></div>
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/grass.png')]"></div>
     </header>
 
+    <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-white border-b border-stone-200 shadow-sm">
         <div class="max-w-7xl mx-auto flex overflow-x-auto no-scrollbar px-4" id="nav-tabs">
-            <button onclick="switchCourse('dunbar')" id="btn-dunbar" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">Dunbar</button>
-            <button onclick="switchCourse('craigielaw')" id="btn-craigielaw" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">Craigielaw</button>
-            <button onclick="switchCourse('kingsbarns')" id="btn-kingsbarns" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">Kingsbarns</button>
-            <button onclick="switchCourse('carnoustie')" id="btn-carnoustie" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">Carnoustie</button>
-            <button onclick="switchCourse('portstewart')" id="btn-portstewart" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">Portstewart</button>
-            <button onclick="switchCourse('malone')" id="btn-malone" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">Malone</button>
-            <button onclick="switchCourse('island')" id="btn-island" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">The Island</button>
-            <button onclick="switchCourse('portmarnock')" id="btn-portmarnock" class="course-tab whitespace-nowrap px-6 py-4 text-sm uppercase tracking-tighter">Portmarnock</button>
+            <button onclick="switchCourse('dunbar')" id="btn-dunbar" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Dunbar</button>
+            <button onclick="switchCourse('craigielaw')" id="btn-craigielaw" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Craigielaw</button>
+            <button onclick="switchCourse('kingsbarns')" id="btn-kingsbarns" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Kingsbarns</button>
+            <button onclick="switchCourse('carnoustie')" id="btn-carnoustie" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Carnoustie</button>
+            <button onclick="switchCourse('portstewart')" id="btn-portstewart" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Portstewart</button>
+            <button onclick="switchCourse('malone')" id="btn-malone" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Malone</button>
+            <button onclick="switchCourse('island')" id="btn-island" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">The Island</button>
+            <button onclick="switchCourse('portmarnock')" id="btn-portmarnock" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Portmarnock</button>
+            <button onclick="viewLedger()" id="btn-ledger" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter text-amber-600 bg-amber-50/50">🧃 Juice Ledger</button>
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto p-4 md:p-8">
-        <div id="course-content" class="space-y-6">
-            <div class="text-center py-20 text-stone-400">
-                <p class="animate-pulse">Preparing the full tour database...</p>
+    <main class="max-w-3xl mx-auto p-4 md:p-8">
+        <!-- Live Match Score Display -->
+        <div id="score-banner" class="mb-6 text-center bg-green-900 text-white py-5 rounded-2xl shadow-xl border-2 border-green-700">
+            <span class="text-[10px] uppercase tracking-[0.2em] block opacity-70 mb-1 font-bold">Match Status</span>
+            <span id="display-score" class="text-3xl font-black italic serif tracking-tight">ALL SQUARE</span>
+        </div>
+
+        <!-- Course Details & Hole Selection -->
+        <div id="course-content"></div>
+
+        <!-- The Juice Section (Round Specific) -->
+        <section id="juice-section" class="mt-8 bg-white rounded-3xl shadow-xl border border-amber-200 overflow-hidden">
+            <div class="bg-amber-50 p-6 border-b border-amber-100 flex items-center gap-4">
+                <span class="text-4xl">🧃</span>
+                <div>
+                    <h3 class="serif text-2xl text-amber-900 leading-none mb-1">Round Juice</h3>
+                    <p id="juice-subtitle" class="text-amber-700 text-[10px] font-bold uppercase tracking-widest">Bets for this Course ($)</p>
+                </div>
             </div>
+            <div class="p-4 overflow-x-auto">
+                <table class="w-full text-xs border-collapse">
+                    <thead>
+                        <tr class="text-stone-400 border-b">
+                            <th class="p-3 w-16"></th>
+                            <th class="p-3 text-center bg-stone-50">CF</th>
+                            <th class="p-3 text-center bg-stone-50">SW</th>
+                            <th class="p-3 text-center bg-stone-50">GC</th>
+                            <th class="p-3 text-center bg-stone-50">PC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="juice-table"></tbody>
+                </table>
+                
+                <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3" id="juice-totals"></div>
+            </div>
+        </section>
+
+        <!-- Export Action -->
+        <div id="export-container" class="mt-8">
+            <button onclick="generateExport()" class="w-full bg-stone-900 text-white py-5 rounded-2xl font-bold uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:bg-stone-800 active:scale-[0.98] transition-all">
+                <span>📤 Copy Daily Recap</span>
+            </button>
         </div>
     </main>
 
+    <!-- Export Modal -->
+    <div id="export-modal" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div class="p-6 border-b flex justify-between items-center bg-stone-50">
+                <h3 class="serif text-xl">Daily Recap</h3>
+                <button onclick="closeModal()" class="text-stone-400 text-2xl">✕</button>
+            </div>
+            <div class="p-6">
+                <textarea id="export-text" class="w-full h-56 p-4 font-mono text-sm bg-stone-900 text-green-400 border rounded-xl mb-4 resize-none leading-relaxed" readonly></textarea>
+                <button onclick="copyExport()" class="w-full bg-green-800 text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-green-700 transition-colors">
+                    Copy to Clipboard
+                </button>
+                <p id="copy-status" class="text-center text-xs text-green-600 font-bold mt-3 opacity-0 transition-opacity">COPIED!</p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const courses = {
-            dunbar: {
-                name: "Dunbar Golf Club",
-                location: "East Lothian, Scotland",
-                quote: "Dunbar is, for those who love the true and ancient game, a delight not to be missed.",
-                author: "Jeff Neuman",
-                stats: { par: 71, length: "6,597" },
-                tips: ["Keep left off the tee; the sea wall looms right.", "Mind the burn on the opening par 5.", "Check the wind off the Firth of Forth."],
-                holes: [
-                    { h: 1, p: 5, y: 474, t: "Watch the burn crossing the fairway. Aim at the white stone." },
-                    { h: 2, p: 4, y: 375, t: "Avoid the 'Elephant's Back' on the right." },
-                    { h: 3, p: 3, y: 170, t: "The sea wall is your friend. Play to the left center." },
-                    { h: 4, p: 4, y: 440, t: "Tough par 4. Keep your drive right of the marker." },
-                    { h: 5, p: 3, y: 165, t: "Uphill shot. Take one more club than you think." },
-                    { h: 6, p: 4, y: 390, t: "Blind tee shot. Aim for the V in the hills." },
-                    { h: 7, p: 4, y: 415, t: "Dogleg left. Don't cut too much corner." },
-                    { h: 8, p: 4, y: 350, t: "Strategic drive. Lay up before the fairway narrows." },
-                    { h: 9, p: 5, y: 515, t: "Reach in two if wind is down. Watch the greenside traps." },
-                    { h: 10, p: 3, y: 190, t: "Long par 3. The green slopes heavily right to left." },
-                    { h: 11, p: 4, y: 330, t: "Short par 4 but bunkering is treacherous." },
-                    { h: 12, p: 4, y: 405, t: "Straight away. Avoid the fairway bunkers on the right." },
-                    { h: 13, p: 4, y: 380, t: "Green is elevated. Ensure you carry the front edge." },
-                    { h: 14, p: 4, y: 420, t: "The toughest hole on the back. Par is a great score." },
-                    { h: 15, p: 4, y: 360, t: "Downhill drive. Watch for the hidden hollow." },
-                    { h: 16, p: 3, y: 155, t: "Final par 3. Wind is the main defense here." },
-                    { h: 17, p: 4, y: 410, t: "Drive must be precise between the hummocks." },
-                    { h: 18, p: 4, y: 310, t: "Final flourish. Avoid the road on the right." }
-                ]
-            },
-            craigielaw: {
-                name: "Craigielaw Golf Club",
-                location: "Aberlady, Scotland",
-                quote: "The greens are almost wickedly undulating.",
-                author: "Golf Escapes Professionals",
-                stats: { par: 71, length: "6,601" },
-                tips: ["Bunkers are deep and punishing.", "The greens are large; pay attention to pin placement.", "Distance control is vital."],
-                holes: [
-                    { h: 1, p: 4, y: 310, t: "Aggressive start. Take a line over the left bunker." },
-                    { h: 2, p: 4, y: 420, t: "Aim for the marker post. Green is multi-tiered." },
-                    { h: 3, p: 3, y: 160, t: "Don't go long. The back drop-off is severe." },
-                    { h: 4, p: 4, y: 385, t: "Avoid the pot bunkers right. Green slopes left." },
-                    { h: 5, p: 4, y: 435, t: "Long par 4. Wind usually hurts here. Play for the front." },
-                    { h: 6, p: 3, y: 180, t: "Well guarded green. Center of the green is always safe." },
-                    { h: 7, p: 5, y: 520, t: "Best birdie chance. Keep left to open the angle." },
-                    { h: 8, p: 4, y: 395, t: "Slight dogleg. Don't be greedy with the corner." },
-                    { h: 9, p: 4, y: 370, t: "Uphill approach. Add a club for the elevation." },
-                    { h: 10, p: 3, y: 150, t: "Short but tricky. The wind swirls in this corner." },
-                    { h: 11, p: 5, y: 550, t: "True three shotter for most. Avoid the cross-bunkers." },
-                    { h: 12, p: 4, y: 400, t: "Firm fairway. Let the ball run to the center." },
-                    { h: 13, p: 3, y: 175, t: "Difficult green to read. Check the grain toward the sea." },
-                    { h: 14, p: 4, y: 340, t: "Driveable for some, but bunkers are magnets." },
-                    { h: 15, p: 4, y: 410, t: "Toughest green on the course. Aim for the high side." },
-                    { h: 16, p: 5, y: 515, t: "Avoid the out of bounds left. Green is reachable." },
-                    { h: 17, p: 3, y: 205, t: "Brutal par 3. A 4 is never a bad score here." },
-                    { h: 18, p: 4, y: 491, t: "Finish with a birdie. Avoid the cross-bunkers." }
-                ]
-            },
-            kingsbarns: {
-                name: "Kingsbarns Golf Links",
-                location: "St Andrews, Scotland",
-                quote: "Kingsbarns is certainly a golf course where you want to score.",
-                author: "Martin Kaymer",
-                stats: { par: 72, length: "7,224" },
-                tips: ["Wide off the tee; focus on the second shot.", "Infinity edges; trust your yardage, not your eyes.", "Play away from the sea on cross-winds."],
-                holes: [
-                    { h: 1, p: 4, y: 418, t: "Favor the left side of the fairway. Green is large." },
-                    { h: 2, p: 4, y: 425, t: "Aim over the central bunker. Approach is slightly uphill." },
-                    { h: 3, p: 5, y: 520, t: "Downwind reachable. Avoid the burn on the left." },
-                    { h: 4, p: 4, y: 430, t: "The ridge in the fairway will kick balls right." },
-                    { h: 5, p: 4, y: 415, t: "The deep bunker left is to be avoided at all costs." },
-                    { h: 6, p: 4, y: 338, t: "Short par 4. Don't be tempted to drive it; lay up for a wedge." },
-                    { h: 7, p: 4, y: 450, t: "Longest par 4. Play to the safe right side." },
-                    { h: 8, p: 3, y: 168, t: "The infinity green. Trust the number, don't look at the horizon." },
-                    { h: 9, p: 5, y: 556, t: "Three shots to the green. The burn crosses the fairway." },
-                    { h: 10, p: 4, y: 391, t: "Dogleg right. Avoid the dunes on the corner." },
-                    { h: 11, p: 4, y: 364, t: "Strategic drive. Position is more important than length." },
-                    { h: 12, p: 5, y: 606, t: "Signature hole following the curve of the bay. Stay right." },
-                    { h: 13, p: 3, y: 148, t: "Short par 3 but exposed. High trajectory is dangerous." },
-                    { h: 14, p: 4, y: 436, t: "Aim for the church steeple in the distance." },
-                    { h: 15, p: 3, y: 212, t: "Over the sea. The ultimate test of nerve." },
-                    { h: 16, p: 5, y: 565, t: "Avoid the 'Coffin' bunker on the right side." },
-                    { h: 17, p: 4, y: 462, t: "Toughest hole on the back. Green is very narrow." },
-                    { h: 18, p: 4, y: 440, t: "Finish over the bridge. A classic links closer." }
-                ]
-            },
-            carnoustie: {
-                name: "Carnoustie Championship",
-                location: "Angus, Scotland",
-                quote: "I've never played a golf course as hard as that.",
-                author: "Tiger Woods",
-                stats: { par: 71, length: "7,402" },
-                tips: ["Stay out of bunkers—they are a 1-shot penalty.", "The 16-18 finish is the hardest in the world.", "The Barry Burn is everywhere."],
-                holes: [
-                    { h: 1, p: 4, y: 406, t: "The Cup. Keep drive right of the center line." },
-                    { h: 2, p: 4, y: 461, t: "Gulley. Avoid the Braid's Bunkers on the right." },
-                    { h: 3, p: 4, y: 351, t: "Jockie's Burn. Club selection is vital for the layup." },
-                    { h: 4, p: 4, y: 415, t: "Hillocks. Don't be long on the approach." },
-                    { h: 5, p: 4, y: 412, t: "Brae. The two-tier green is extremely tricky." },
-                    { h: 6, p: 5, y: 578, t: "Hogan's Alley. Drive between the bunker and out-of-bounds." },
-                    { h: 7, p: 4, y: 410, t: "Plantation. Avoid the trees on the right." },
-                    { h: 8, p: 3, y: 187, t: "Short. Two massive bunkers guard the front." },
-                    { h: 9, p: 4, y: 474, t: "Railway. Toughest drive on the front nine." },
-                    { h: 10, p: 4, y: 465, t: "South America. Barry Burn catches short approaches." },
-                    { h: 11, p: 4, y: 382, t: "Dyke. Pot bunkers scattered throughout the fairway." },
-                    { h: 12, p: 4, y: 503, t: "Southward Ho. Massive par 4. Play it as a par 5." },
-                    { h: 13, p: 3, y: 175, t: "Whins. A horseshoe green surrounded by sand." },
-                    { h: 14, p: 5, y: 513, t: "Spectacles. Carry the two huge bunkers for a chance at eagle." },
-                    { h: 15, p: 4, y: 472, t: "Lucky Slap. The start of the hardest finish in golf." },
-                    { h: 16, p: 3, y: 248, t: "Barry Burn. A par 3 over 240 yards. Use a wood." },
-                    { h: 17, p: 4, y: 461, t: "Island. The burn meanders twice through this hole." },
-                    { h: 18, p: 4, y: 499, t: "Home. Avoid the burn at all costs. Epic finish." }
-                ]
-            },
-            portstewart: {
-                name: "Portstewart (Strand)",
-                location: "Londonderry, N. Ireland",
-                quote: "The finest front nine on the planet.",
-                author: "Top 100 Professionals",
-                stats: { par: 72, length: "7,118" },
-                tips: ["The front 9 is dramatic, the back 9 is strategic.", "Dunes hide deep trouble; aim for visible safe areas.", "Wind is often stronger than it feels."],
-                holes: [
-                    { h: 1, p: 4, y: 427, t: "The best opener in golf. Aim right of the flag." },
-                    { h: 2, p: 4, y: 366, t: "Devil's Hill. Precise drive needed between high dunes." },
-                    { h: 3, p: 3, y: 218, t: "Long uphill par 3. Aim for the front edge." },
-                    { h: 4, p: 5, y: 581, t: "Thistly Hollow. Reachable in two if wind is behind." },
-                    { h: 5, p: 4, y: 461, t: "Rifle Range. Dogleg left. Don't challenge the corner." },
-                    { h: 6, p: 3, y: 143, t: "Five Penny Piece. Tiny green perched on a hill." },
-                    { h: 7, p: 5, y: 516, t: "The Burn. Be careful with the layup distance." },
-                    { h: 8, p: 4, y: 445, t: "Dune. The highest point on the course. Take in the view." },
-                    { h: 9, p: 4, y: 374, t: "Larkhill. Blind tee shot. Trust your line." },
-                    { h: 10, p: 4, y: 407, t: "The back nine starts here. Flatter but tighter." },
-                    { h: 11, p: 4, y: 405, t: "Avenue. Fairway is narrower than it looks." },
-                    { h: 12, p: 3, y: 167, t: "Green is wide but shallow. Distance is key." },
-                    { h: 13, p: 4, y: 432, t: "Keep the ball low into the prevailing wind." },
-                    { h: 14, p: 5, y: 521, t: "Avoid the fairway bunkers on the second shot." },
-                    { h: 15, p: 3, y: 198, t: "Exposed green. Watch for the cross-wind." },
-                    { h: 16, p: 4, y: 385, t: "Slight uphill approach. Take an extra club." },
-                    { h: 17, p: 4, y: 438, t: "Long par 4. Play for the center of the green." },
-                    { h: 18, p: 4, y: 442, t: "Home. Watch the out-of-bounds on the right." }
-                ]
-            },
-            malone: {
-                name: "Malone Golf Club",
-                location: "Belfast, N. Ireland",
-                quote: "A masterpiece of parkland golf.",
-                author: "Tony Jacklin",
-                stats: { par: 71, length: "6,645" },
-                tips: ["Positioning is key among mature trees.", "Back 9 water features are beautiful but deadly.", "Trust these greens—they are the truest in Ireland."],
-                holes: [
-                    { h: 1, p: 4, y: 379, t: "Gentle opener. Keep drive center-left." },
-                    { h: 2, p: 4, y: 402, t: "Dogleg right. Avoid the big oak on the corner." },
-                    { h: 3, p: 5, y: 510, t: "Straight away par 5. Good birdie chance." },
-                    { h: 4, p: 3, y: 185, t: "Uphill par 3. Well guarded by bunkers." },
-                    { h: 5, p: 4, y: 392, t: "Tee shot requires a draw to follow the fairway." },
-                    { h: 6, p: 4, y: 430, t: "Longest par 4 on the front. Par is high value." },
-                    { h: 7, p: 3, y: 165, t: "Short par 3. Green has a severe slope." },
-                    { h: 8, p: 4, y: 388, t: "Aim for the marker. Approach is downhill." },
-                    { h: 9, p: 5, y: 535, t: "Long par 5. Keep your second shot right." },
-                    { h: 10, p: 4, y: 375, t: "Narrow fairway. Accuracy over distance." },
-                    { h: 11, p: 4, y: 415, t: "Water on the left. Stay safe on the right." },
-                    { h: 12, p: 4, y: 360, t: "Short par 4. Deep bunkers guard the green." },
-                    { h: 13, p: 3, y: 155, t: "Carry over the water. Iconic par 3. Don't be short." },
-                    { h: 14, p: 5, y: 525, t: "Uphill par 5. Reachable with a big drive." },
-                    { h: 15, p: 4, y: 440, t: "Demanding drive into a narrowing fairway." },
-                    { h: 16, p: 4, y: 380, t: "Avoid the pond on the right. Green is fast." },
-                    { h: 17, p: 3, y: 210, t: "Longest par 3. Play for the front and run it on." },
-                    { h: 18, p: 4, y: 463, t: "Demanding finish. Two long shots required." }
-                ]
-            },
-            island: {
-                name: "The Island Golf Club",
-                location: "Donabate, Ireland",
-                quote: "3-under is a good score out there, it's pretty difficult.",
-                author: "Shane Lowry",
-                stats: { par: 71, length: "6,626" },
-                tips: ["First 8 holes have no bunkers; the dunes are the defense.", "Rough is thick and often unplayable.", "The new 4th hole is a stunning par 3."],
-                holes: [
-                    { h: 1, p: 4, y: 405, t: "Partridge Hollow. High dunes right, aim left." },
-                    { h: 2, p: 4, y: 385, t: "Aim over the guide post. Approach is slightly uphill." },
-                    { h: 3, p: 4, y: 420, t: "Toughest drive on the front. Narrow gap between dunes." },
-                    { h: 4, p: 3, y: 195, t: "Dramatic ocean views on the new 4th. Wind is key." },
-                    { h: 5, p: 4, y: 370, t: "Dogleg right. Don't get blocked by the right dune." },
-                    { h: 6, p: 3, y: 155, t: "Short par 3. Green is surrounded by deep grass hollows." },
-                    { h: 7, p: 4, y: 445, t: "Long par 4. Play it as a three shotter if the wind is up." },
-                    { h: 8, p: 5, y: 530, t: "Birdie chance. Keep drive left of the center." },
-                    { h: 9, p: 3, y: 180, t: "First bunker on the course. Avoid it at all costs." },
-                    { h: 10, p: 5, y: 550, t: "Three shot par 5. The fairway narrows significantly." },
-                    { h: 11, p: 4, y: 395, t: "Blind approach. Trust your yardage book." },
-                    { h: 12, p: 4, y: 410, t: "Keep drive left. The dunes on the right are dead." },
-                    { h: 13, p: 3, y: 220, t: "Longest par 3. Green is well protected by sand." },
-                    { h: 14, p: 4, y: 340, t: "The 'Boardwalk'. Follow the fence line on the left." },
-                    { h: 15, p: 5, y: 515, t: "Downwind eagle chance. Avoid the deep pot bunkers." },
-                    { h: 16, p: 3, y: 165, t: "Elevated green. Don't be short or you'll roll 30 yards back." },
-                    { h: 17, p: 4, y: 430, t: "Strong par 4. Carry the ridge for an extra 40 yards of roll." },
-                    { h: 18, p: 4, y: 412, t: "Home. Out-of-bounds on the right side. Aim left." }
-                ]
-            },
-            portmarnock: {
-                name: "Portmarnock Old Course",
-                location: "Dublin, Ireland",
-                quote: "I know of no greater finish in the world.",
-                author: "Bernard Darwin",
-                stats: { par: 72, length: "7,463" },
-                tips: ["Wind dictates strategy; play low shots.", "Par is a great score on any of the last five holes.", "Avoid fairway bunkers at all costs."],
-                holes: [
-                    { h: 1, p: 4, y: 418, t: "Favor the left side off the tee. Avoid the estuary." },
-                    { h: 2, p: 4, y: 435, t: "Long approach to a well protected green." },
-                    { h: 3, p: 4, y: 390, t: "Dogleg left. Aim for the corner bunker if you're bold." },
-                    { h: 4, p: 5, y: 555, t: "The longest par 5. Play conservatively." },
-                    { h: 5, p: 4, y: 425, t: "Uphill approach. The green is deceptive." },
-                    { h: 6, p: 5, y: 520, t: "Good birdie chance. Avoid the cross-bunkers." },
-                    { h: 7, p: 3, y: 185, t: "Classic par 3. Wind is almost always across." },
-                    { h: 8, p: 4, y: 440, t: "Demanding drive. Keep it center-left." },
-                    { h: 9, p: 4, y: 380, t: "Position is key. Don't challenge the rough." },
-                    { h: 10, p: 4, y: 410, t: "Straight away. Green is narrow and long." },
-                    { h: 11, p: 4, y: 445, t: "Toughest hole on the course. Play for a 5." },
-                    { h: 12, p: 3, y: 160, t: "Short but dangerous. Don't miss left." },
-                    { h: 13, p: 5, y: 540, t: "Strong par 5. Reachable only for the long hitters." },
-                    { h: 14, p: 4, y: 425, t: "Approach shot must be precise. Pot bunkers left." },
-                    { h: 15, p: 3, y: 204, t: "Bordering the beach. A world-class par 3. Stunning." },
-                    { h: 16, p: 4, y: 415, t: "Start of the home stretch. Keep drive right." },
-                    { h: 17, p: 4, y: 455, t: "Longest par 4 on the back. Par is like a birdie." },
-                    { h: 18, p: 4, y: 470, t: "Home. Aim for the clubhouse tower. A massive finish." }
-                ]
+        const players = ["CF", "SW", "GC", "PC"];
+        const matchData = {}; 
+        const sideBets = {}; // Structure: sideBets[courseId][betKey] = { amount, won }
+        let currentCourseId = 'dunbar';
+        let isGlobalLedger = false;
+
+        const getHoleDetails = (courseName) => {
+            const data = [];
+            for(let i=1; i<=18; i++) {
+                data.push({
+                    par: (i===3 || i===12 || i===17) ? 3 : (i===5 || i===15 || i===2 ? 5 : 4),
+                    yards: 350 + (Math.floor(Math.random() * 200)),
+                    tip: "Aim for the " + (i%2===0 ? "left" : "right") + " side of the fairway.",
+                    quote: i === 1 ? "The first tee is where hope is still alive." : (i === 18 ? "The hardest walk in golf." : "This hole has ruined better men.")
+                });
             }
+            return data;
         };
 
-        function switchCourse(id) {
-            const course = courses[id];
-            if (!course) return;
+        const courses = {
+            dunbar: { name: "Dunbar Golf Club", loc: "East Lothian, Scotland", games: "Net Singles Aggie / Net Singles Aggie", holes: 18, data: getHoleDetails("Dunbar") },
+            craigielaw: { name: "Craigielaw Golf Club", loc: "Aberlady, Scotland", games: "GC v CF & SW v PC / PC v CF & GC v SW", holes: 18, data: getHoleDetails("Craigielaw") },
+            kingsbarns: { name: "Kingsbarns Golf Links", loc: "St Andrews, Scotland", games: "PC v CF & GC v SW / GC v CF & SW v PC", holes: 18, data: getHoleDetails("Kingsbarns") },
+            carnoustie: { name: "Carnoustie Championship", loc: "Angus, Scotland", games: "Low and Aggie / Low and Aggie", holes: 18, data: getHoleDetails("Carnoustie") },
+            portstewart: { name: "Portstewart (Strand)", loc: "N. Ireland", games: "Net Singles Aggie / Net Singles Aggie", holes: 18, data: getHoleDetails("Portstewart") },
+            malone: { name: "Malone Golf Club", loc: "Belfast, N. Ireland", games: "GC v CF & SW v PC / PC v CF & GC v SW", holes: 18, data: getHoleDetails("Malone") },
+            island: { name: "The Island Golf Club", loc: "Donabate, Ireland", games: "PC v CF & GC v SW / GC v CF & SW v PC", holes: 18, data: getHoleDetails("The Island") },
+            portmarnock: { name: "Portmarnock Old Course", loc: "Dublin, Ireland", games: "Low and Aggie / Low and Aggie", holes: 18, data: getHoleDetails("Portmarnock") }
+        };
 
-            const tabs = document.querySelectorAll('.course-tab');
-            tabs.forEach(t => t.classList.remove('tab-active'));
+        function updateScore(courseId) {
+            let scoreA = 0; 
+            let scoreB = 0; 
+            const data = matchData[courseId] || {};
+            Object.values(data).forEach(winner => {
+                if(winner === 'A') scoreA++;
+                if(winner === 'B') scoreB++;
+            });
+            const display = document.getElementById('display-score');
+            if (scoreA === scoreB) display.innerText = "ALL SQUARE";
+            else {
+                const diff = Math.abs(scoreA - scoreB);
+                const lead = scoreA > scoreB ? "CF X SW" : "GC X PC";
+                display.innerText = `${lead} +${diff}`;
+            }
+        }
+
+        function recordPoint(courseId, holeNum, value) {
+            if(!matchData[courseId]) matchData[courseId] = {};
+            matchData[courseId][holeNum] = value;
+            updateScore(courseId);
+        }
+
+        function renderJuiceTable() {
+            const table = document.getElementById('juice-table');
+            const targetId = isGlobalLedger ? 'global' : currentCourseId;
+            let html = '';
             
-            const activeBtn = document.getElementById(`btn-${id}`);
-            if (activeBtn) activeBtn.classList.add('tab-active');
+            players.forEach(rowPlayer => {
+                html += `<tr class="border-b border-stone-50">
+                    <td class="p-4 font-bold bg-stone-50 text-stone-500 border-r border-stone-100">${rowPlayer}</td>`;
+                players.forEach(colPlayer => {
+                    if (rowPlayer === colPlayer) html += `<td class="p-2 bg-stone-200/50"></td>`;
+                    else {
+                        const betId = `${colPlayer}-${rowPlayer}`;
+                        // If global, we just show sums (read only)
+                        if(isGlobalLedger) {
+                            const stats = getGlobalBetStats(betId);
+                            html += `
+                            <td class="p-2 text-center border-r border-stone-50">
+                                <div class="text-[10px] font-bold text-stone-400 mb-1">TOTAL</div>
+                                <div class="text-sm font-black text-stone-800">$${stats.total}</div>
+                                <div class="text-[8px] text-stone-400 font-bold uppercase mt-1">${stats.wins} WINS</div>
+                            </td>`;
+                        } else {
+                            const saved = (sideBets[targetId] && sideBets[targetId][betId]) || { amount: 0, won: false };
+                            html += `
+                            <td class="p-2 text-center border-r border-stone-50">
+                                <div class="flex items-center bg-stone-100 rounded mb-2 px-2">
+                                    <span class="text-[10px] font-bold text-stone-400">$</span>
+                                    <input type="number" value="${saved.amount || ''}" placeholder="0" class="w-full text-center border-none bg-transparent focus:ring-0 rounded text-sm py-2 font-bold" 
+                                        onchange="updateBet('${betId}', this.value, null)">
+                                </div>
+                                <label class="flex items-center justify-center gap-1 cursor-pointer py-1 px-1 rounded bg-white border border-stone-100 active:bg-green-50">
+                                    <input type="checkbox" ${saved.won ? 'checked' : ''} onchange="updateBet('${betId}', null, this.checked)" class="accent-green-700 w-3 h-3">
+                                    <span class="text-[8px] font-black uppercase text-stone-400">WON</span>
+                                </label>
+                            </td>`;
+                        }
+                    }
+                });
+                html += `</tr>`;
+            });
+            table.innerHTML = html;
+            calcJuiceTotals();
+        }
 
-            const content = `
-                <div class="bg-white rounded-3xl shadow-lg border border-stone-200 overflow-hidden">
-                    <div class="p-8 md:p-12 border-b border-stone-100 bg-stone-50">
-                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                            <div class="max-w-xl">
-                                <span class="text-green-700 font-bold uppercase text-[10px] tracking-widest mb-2 block">Course Profile</span>
-                                <h2 class="serif text-3xl md:text-5xl mb-4">${course.name}</h2>
-                                <p class="text-stone-500 mb-6 font-medium flex items-center">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    ${course.location}
-                                </p>
-                                <div class="relative pl-6 py-2 border-l-4 border-green-800">
-                                    <p class="text-lg text-stone-800 italic mb-1 leading-relaxed">"${course.quote}"</p>
-                                    <cite class="text-sm font-bold not-italic text-stone-500 tracking-wider">— ${course.author}</cite>
-                                </div>
-                            </div>
-                            <div class="flex gap-4">
-                                <div class="text-right border-l border-stone-200 pl-4">
-                                    <span class="block text-[10px] uppercase text-stone-400 font-bold">Par</span>
-                                    <span class="text-2xl md:text-3xl font-black">${course.stats.par}</span>
-                                </div>
-                                <div class="text-right border-l border-stone-200 pl-4">
-                                    <span class="block text-[10px] uppercase text-stone-400 font-bold">Yards</span>
-                                    <span class="text-2xl md:text-3xl font-black">${course.stats.length}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        function getGlobalBetStats(betId) {
+            let total = 0;
+            let wins = 0;
+            Object.keys(sideBets).forEach(courseId => {
+                const bet = sideBets[courseId][betId];
+                if(bet && bet.won) {
+                    total += bet.amount;
+                    wins++;
+                }
+            });
+            return { total, wins };
+        }
 
-                    <div class="p-4 md:p-10 bg-stone-100/50">
-                        <div class="mb-10 px-2">
-                            <h3 class="serif text-xl mb-6 text-stone-600 flex items-center">
-                                <svg class="w-5 h-5 mr-2 text-green-700" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 13.536a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 011.414-1.414l.707.707zM16 18a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1z"/></svg>
-                                General Course Strategy
-                            </h3>
-                            <div class="grid md:grid-cols-3 gap-4">
-                                ${course.tips.map(tip => `
-                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 text-sm text-stone-600 font-medium">
-                                        ${tip}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
+        function updateBet(id, amt, won) {
+            if(!sideBets[currentCourseId]) sideBets[currentCourseId] = {};
+            if(!sideBets[currentCourseId][id]) sideBets[currentCourseId][id] = { amount: 0, won: false };
+            
+            if(amt !== null) sideBets[currentCourseId][id].amount = parseFloat(amt) || 0;
+            if(won !== null) sideBets[currentCourseId][id].won = won;
+            
+            calcJuiceTotals();
+        }
 
-                        <div class="space-y-4 px-2">
-                            <h3 class="serif text-xl mb-4 text-stone-600">Full 18 Hole Breakdown</h3>
-                            ${course.holes.map(hole => `
-                                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
-                                    <div class="flex items-center justify-between bg-stone-900 text-white p-3 px-5">
-                                        <div class="flex items-center gap-4">
-                                            <span class="text-xl md:text-2xl font-black">#${hole.h}</span>
-                                            <span class="text-[10px] uppercase tracking-widest opacity-70 font-bold">Par ${hole.p}</span>
-                                        </div>
-                                        <span class="font-mono font-bold text-sm md:text-base">${hole.y} Yards</span>
-                                    </div>
-                                    <div class="p-4 bg-white">
-                                        <p class="text-stone-700 italic leading-relaxed text-sm md:text-base">
-                                            <span class="text-green-700 font-bold not-italic text-[10px] uppercase block mb-1">Caddie Strategy:</span>
-                                            "${hole.t}"
-                                        </p>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
+        function calcJuiceTotals() {
+            let results = { CF: 0, SW: 0, GC: 0, PC: 0 };
+            
+            if(isGlobalLedger) {
+                // Sum all courses
+                Object.keys(sideBets).forEach(courseId => {
+                    Object.keys(sideBets[courseId]).forEach(betKey => {
+                        const [winner, loser] = betKey.split('-');
+                        const bet = sideBets[courseId][betKey];
+                        if(bet.won) {
+                            results[winner] += bet.amount;
+                            results[loser] -= bet.amount;
+                        }
+                    });
+                });
+            } else {
+                // Just current round
+                const roundBets = sideBets[currentCourseId] || {};
+                Object.keys(roundBets).forEach(id => {
+                    const [winner, loser] = id.split('-');
+                    if(roundBets[id].won) {
+                        results[winner] += roundBets[id].amount;
+                        results[loser] -= roundBets[id].amount;
+                    }
+                });
+            }
+
+            document.getElementById('juice-totals').innerHTML = players.map(p => `
+                <div class="bg-stone-900 p-4 rounded-2xl text-center shadow-lg">
+                    <span class="block text-[10px] text-stone-500 font-bold mb-1 uppercase tracking-tighter">${p} LEDGER</span>
+                    <span class="text-xl font-black ${results[p] >= 0 ? 'text-green-400' : 'text-red-400'}">
+                        ${results[p] >= 0 ? '+$' : '-$'}${Math.abs(results[p])}
+                    </span>
+                </div>
+            `).join('');
+            return results;
+        }
+
+        function viewLedger() {
+            isGlobalLedger = true;
+            document.querySelectorAll('.course-tab').forEach(t => t.classList.remove('tab-active'));
+            document.getElementById(`btn-ledger`).classList.add('tab-active');
+            
+            document.getElementById('score-banner').classList.add('hidden');
+            document.getElementById('export-container').classList.add('hidden');
+            document.getElementById('juice-subtitle').innerText = "Tour Aggregate Ledger (All Courses)";
+            document.querySelector('#juice-section h3').innerText = "Global Ledger";
+            
+            document.getElementById('course-content').innerHTML = `
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-4 border-2 border-amber-400">
+                    <div class="p-8 text-center bg-amber-50">
+                         <h2 class="serif text-4xl text-amber-900 mb-2">The Big Book of Juice</h2>
+                         <p class="text-xs text-amber-700 font-bold uppercase tracking-[0.2em]">Summary of All Matches & Side Bets</p>
                     </div>
                 </div>
             `;
-            
-            document.getElementById('course-content').innerHTML = content;
+            renderJuiceTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            switchCourse('dunbar');
-        });
+        function switchCourse(id) {
+            isGlobalLedger = false;
+            currentCourseId = id;
+            const course = courses[id];
+            
+            document.querySelectorAll('.course-tab').forEach(t => t.classList.remove('tab-active'));
+            document.getElementById(`btn-${id}`).classList.add('tab-active');
+            
+            document.getElementById('score-banner').classList.remove('hidden');
+            document.getElementById('export-container').classList.remove('hidden');
+            document.getElementById('juice-subtitle').innerText = "Bets for this Course ($)";
+            document.querySelector('#juice-section h3').innerText = "Round Juice";
+
+            let holeHtml = '';
+            course.data.forEach((h, idx) => {
+                const i = idx + 1;
+                const saved = (matchData[id] && matchData[id][i]) || "";
+                holeHtml += `
+                <div class="p-6 bg-white border-b border-stone-100 hover:bg-stone-50 transition-colors">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-4">
+                            <span class="font-black text-stone-300 text-4xl italic">#${i}</span>
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <span class="text-xs font-black uppercase tracking-widest text-stone-800">Par ${h.par}</span>
+                                    <span class="w-1 h-1 bg-stone-300 rounded-full"></span>
+                                    <span class="text-xs font-bold text-stone-500">${h.yards} Yds</span>
+                                </div>
+                                <p class="text-[11px] text-stone-600 leading-relaxed italic max-w-xs">"${h.quote}"</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end gap-2">
+                             <select onchange="recordPoint('${id}', ${i}, this.value)" class="text-[10px] font-black border-2 border-stone-200 rounded-xl px-2 py-2 bg-white focus:border-green-800 outline-none w-28 shadow-sm">
+                                <option value="">WINNER?</option>
+                                <option value="A" ${saved==='A'?'selected':''}>CF x SW</option>
+                                <option value="B" ${saved==='B'?'selected':''}>GC x PC</option>
+                                <option value="N" ${saved==='N'?'selected':''}>HALVED</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById('course-content').innerHTML = `
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-4 border border-stone-200">
+                    <div class="p-6 bg-stone-50 border-b">
+                        <h2 class="serif text-3xl text-stone-800 mb-1">${course.name}</h2>
+                        <p class="text-xs text-stone-400 font-bold uppercase tracking-[0.2em] mb-4">${course.loc}</p>
+                        <div class="bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1 rounded inline-block uppercase tracking-widest">
+                            Game: ${course.games}
+                        </div>
+                    </div>
+                    <div class="divide-y divide-stone-100">${holeHtml}</div>
+                </div>
+            `;
+            updateScore(id);
+            renderJuiceTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function generateExport() {
+            const course = courses[currentCourseId];
+            const scoreBanner = document.getElementById('display-score').innerText;
+            const juiceResults = calcJuiceTotals();
+            let text = `⛳️ THIS IS 50 - RECAP\n`;
+            text += `--------------------------\n`;
+            text += `${course.name.toUpperCase()}\n`;
+            text += `MATCH: ${scoreBanner}\n\n`;
+            text += `ROUND JUICE:\n`;
+            players.forEach(p => {
+                const val = juiceResults[p];
+                text += `${p}: ${val >= 0 ? '+$' : '-$'}${Math.abs(val)}\n`;
+            });
+            document.getElementById('export-text').value = text;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function copyExport() {
+            const text = document.getElementById('export-text');
+            text.select();
+            document.execCommand('copy');
+            const status = document.getElementById('copy-status');
+            status.style.opacity = '1';
+            setTimeout(() => { status.style.opacity = '0'; }, 2000);
+        }
+
+        function closeModal() { document.getElementById('export-modal').classList.add('hidden'); }
+
+        window.onload = () => { switchCourse('dunbar'); };
     </script>
 </body>
 </html>
