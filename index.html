@@ -3,14 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>This is 50. A Yardage Book for the Boys</title>
+    <title>This is 50. Scotland & Ireland 2026</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
-        
         body { font-family: 'Inter', sans-serif; background-color: #f5f5f4; -webkit-tap-highlight-color: transparent; }
         .serif { font-family: 'Playfair+Display', serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Animations */
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .course-tab { transition: all 0.2s ease; border-bottom: 3px solid transparent; cursor: pointer; }
         .tab-active { 
             border-bottom: 3px solid #166534 !important; 
@@ -18,84 +30,127 @@
             font-weight: 700 !important; 
             background-color: #f0fdf4 !important; 
         }
-        
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; margin: 0; 
         }
+
+        /* Itinerary specific styles */
+        .itinerary-day-btn { transition: all 0.3s; flex-shrink: 0; }
+        .day-active { background-color: #064e3b !important; color: white !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
     </style>
 </head>
-<body class="text-stone-900 pb-20">
+<body class="text-stone-900">
 
-    <!-- Header -->
-    <header class="bg-stone-900 text-white py-10 px-6 text-center shadow-2xl relative overflow-hidden">
-        <div class="relative z-10">
-            <h1 class="serif text-4xl md:text-5xl mb-2 italic">This is 50.</h1>
-            <p class="text-stone-400 tracking-[0.2em] uppercase text-[10px] font-bold">The Scotland & Ireland Tour App</p>
-        </div>
-        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/grass.png')]"></div>
-    </header>
-
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white border-b border-stone-200 shadow-sm">
-        <div class="max-w-7xl mx-auto flex overflow-x-auto no-scrollbar px-4" id="nav-tabs">
-            <button onclick="viewLedger()" id="btn-ledger" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter text-amber-600 bg-amber-50/50">🧃 Juice Ledger</button>
-            <button onclick="switchCourse('dunbar')" id="btn-dunbar" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Dunbar</button>
-            <button onclick="switchCourse('craigielaw')" id="btn-craigielaw" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Craigielaw</button>
-            <button onclick="switchCourse('kingsbarns')" id="btn-kingsbarns" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Kingsbarns</button>
-            <button onclick="switchCourse('carnoustie')" id="btn-carnoustie" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Carnoustie</button>
-            <button onclick="switchCourse('portstewart')" id="btn-portstewart" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Portstewart</button>
-            <button onclick="switchCourse('malone')" id="btn-malone" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Malone</button>
-            <button onclick="switchCourse('island')" id="btn-island" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">The Island</button>
-            <button onclick="switchCourse('portmarnock')" id="btn-portmarnock" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Portmarnock</button>
-        </div>
-    </nav>
-
-    <main class="max-w-3xl mx-auto p-4 md:p-8">
-        <div id="score-banner" class="mb-6 text-center bg-green-900 text-white py-5 rounded-2xl shadow-xl border-2 border-green-700">
-            <span class="text-[10px] uppercase tracking-[0.2em] block opacity-70 mb-1 font-bold">Match Status</span>
-            <span id="display-score" class="text-3xl font-black italic serif tracking-tight">ALL SQUARE</span>
+    <!-- LANDING MENU PAGE -->
+    <div id="landing-menu" class="fixed inset-0 z-[100] bg-stone-900 flex flex-col items-center justify-center p-6 text-center fade-in">
+        <div class="mb-12">
+            <h1 class="serif text-5xl md:text-7xl text-white italic mb-4">This is 50.</h1>
+            <p class="text-stone-400 tracking-[0.3em] uppercase text-xs font-bold">The Scotland & Ireland Elite Tour</p>
         </div>
 
-        <div id="course-content"></div>
-
-        <!-- Juice Section -->
-        <section id="juice-section" class="mt-8 bg-white rounded-3xl shadow-xl border border-amber-200 overflow-hidden">
-            <div class="bg-amber-50 p-6 border-b border-amber-100 flex items-center gap-4">
-                <span class="text-4xl">🧃</span>
-                <div>
-                    <h3 class="serif text-2xl text-amber-900 leading-none mb-1">Round Juice</h3>
-                    <p id="juice-subtitle" class="text-amber-700 text-[10px] font-bold uppercase tracking-widest">Bets for this Course ($)</p>
-                </div>
-            </div>
-            <div class="p-4 overflow-x-auto">
-                <table class="w-full text-xs border-collapse">
-                    <thead>
-                        <tr class="text-stone-400 border-b">
-                            <th class="p-3 w-16"></th>
-                            <th class="p-3 text-center bg-stone-50">CF</th>
-                            <th class="p-3 text-center bg-stone-50">SW</th>
-                            <th class="p-3 text-center bg-stone-50">GC</th>
-                            <th class="p-3 text-center bg-stone-50">PC</th>
-                        </tr>
-                    </thead>
-                    <tbody id="juice-table"></tbody>
-                </table>
-                <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3" id="juice-totals"></div>
-            </div>
-        </section>
-
-        <div id="export-container" class="mt-8">
-            <button onclick="generateExport()" class="w-full bg-stone-900 text-white py-5 rounded-2xl font-bold uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 hover:bg-stone-800 transition-all">
-                <span>📤 Copy Daily Recap</span>
+        <div class="space-y-4 w-full max-w-sm">
+            <button onclick="showSection('matches')" class="w-full py-6 bg-green-800 hover:bg-green-700 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-xl border border-green-600">
+                View the Golf Matches
+            </button>
+            
+            <button onclick="showSection('itinerary')" class="w-full py-6 bg-stone-800 hover:bg-stone-700 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-xl border border-stone-600">
+                View the Itinerary
             </button>
         </div>
-    </main>
+        
+        <div class="absolute bottom-10 opacity-20">
+            <img src="https://www.transparenttextures.com/patterns/grass.png" class="invert" alt="grass" style="width: 200px;">
+        </div>
+    </div>
 
-    <!-- Export Modal -->
+    <!-- GOLF MATCHES SECTION -->
+    <div id="section-matches" class="hidden min-h-screen pb-20">
+        <header class="bg-stone-900 text-white py-10 px-6 text-center shadow-2xl relative overflow-hidden">
+            <button onclick="backToMenu()" class="absolute left-4 top-4 text-stone-400 text-[10px] font-bold uppercase tracking-widest border border-stone-700 px-3 py-2 rounded-lg">← Hub</button>
+            <div class="relative z-10">
+                <h1 class="serif text-4xl md:text-5xl mb-2 italic">Match Day</h1>
+                <p class="text-stone-400 tracking-[0.2em] uppercase text-[10px] font-bold">Tour Ledger & Yardage</p>
+            </div>
+        </header>
+
+        <nav class="sticky top-0 z-50 bg-white border-b border-stone-200 shadow-sm">
+            <div class="max-w-7xl mx-auto flex overflow-x-auto no-scrollbar px-4" id="nav-tabs">
+                <button onclick="viewLedger()" id="btn-ledger" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter text-amber-600 bg-amber-50/50">🧃 Juice Ledger</button>
+                <button onclick="switchCourse('dunbar')" id="btn-dunbar" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Dunbar</button>
+                <button onclick="switchCourse('craigielaw')" id="btn-craigielaw" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Craigielaw</button>
+                <button onclick="switchCourse('kingsbarns')" id="btn-kingsbarns" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Kingsbarns</button>
+                <button onclick="switchCourse('carnoustie')" id="btn-carnoustie" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Carnoustie</button>
+                <button onclick="switchCourse('portstewart')" id="btn-portstewart" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Portstewart</button>
+                <button onclick="switchCourse('malone')" id="btn-malone" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Malone</button>
+                <button onclick="switchCourse('island')" id="btn-island" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">The Island</button>
+                <button onclick="switchCourse('portmarnock')" id="btn-portmarnock" class="course-tab whitespace-nowrap px-6 py-4 text-xs font-bold uppercase tracking-tighter">Portmarnock</button>
+            </div>
+        </nav>
+
+        <main class="max-w-3xl mx-auto p-4 md:p-8">
+            <div id="score-banner" class="mb-6 text-center bg-green-900 text-white py-5 rounded-2xl shadow-xl border-2 border-green-700">
+                <span id="display-score" class="text-3xl font-black italic serif tracking-tight">ALL SQUARE</span>
+            </div>
+
+            <div id="course-content"></div>
+
+            <!-- Juice Section -->
+            <section id="juice-section" class="mt-8 bg-white rounded-3xl shadow-xl border border-amber-200 overflow-hidden">
+                <div class="bg-amber-50 p-6 border-b border-amber-100 flex items-center gap-4">
+                    <span class="text-4xl">🧃</span>
+                    <div>
+                        <h3 class="serif text-2xl text-amber-900 leading-none mb-1">Round Juice</h3>
+                        <p id="juice-subtitle" class="text-amber-700 text-[10px] font-bold uppercase tracking-widest">Bets for this Course ($)</p>
+                    </div>
+                </div>
+                <div class="p-4 overflow-x-auto">
+                    <table class="w-full text-xs border-collapse">
+                        <thead>
+                            <tr class="text-stone-400 border-b">
+                                <th class="p-3 w-16"></th>
+                                <th class="p-3 text-center bg-stone-50">CF</th>
+                                <th class="p-3 text-center bg-stone-50">SW</th>
+                                <th class="p-3 text-center bg-stone-50">GC</th>
+                                <th class="p-3 text-center bg-stone-50">PC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="juice-table"></tbody>
+                    </table>
+                    <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3" id="juice-totals"></div>
+                </div>
+            </section>
+            
+            <div id="export-container" class="mt-8">
+                <button onclick="generateExport()" class="w-full bg-stone-900 text-white py-5 rounded-2xl font-bold uppercase tracking-widest shadow-xl flex items-center justify-center gap-3">
+                    <span>📤 Copy Daily Recap</span>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- ITINERARY SECTION -->
+    <div id="section-itinerary" class="hidden min-h-screen bg-stone-100">
+        <header class="bg-green-900 text-white shadow-md sticky top-0 z-[60]">
+            <div class="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between">
+                <button onclick="backToMenu()" class="text-green-200 text-[10px] font-bold uppercase tracking-widest border border-green-700 px-3 py-2 rounded-lg">← Hub</button>
+                <div class="text-center">
+                    <h1 class="text-xl font-serif font-bold tracking-wide leading-tight">Tour Itinerary</h1>
+                    <p class="text-green-200 text-[9px] uppercase tracking-widest">June 6 – 17, 2026</p>
+                </div>
+                <div class="w-10"></div> <!-- Spacer -->
+            </div>
+            <!-- Date Scroller -->
+            <div class="bg-white/10 backdrop-blur-sm py-3 px-2 flex overflow-x-auto no-scrollbar gap-2">
+                <div id="itinerary-date-nav" class="flex gap-2 mx-auto"></div>
+            </div>
+        </header>
+
+        <main id="itinerary-card-container" class="max-w-4xl mx-auto p-4 md:p-8 fade-in"></main>
+    </div>
+
+    <!-- Export Modal Logic -->
     <div id="export-modal" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl">
             <div class="p-6 border-b flex justify-between items-center bg-stone-50">
@@ -103,208 +158,169 @@
                 <button onclick="closeModal()" class="text-stone-400 text-2xl">✕</button>
             </div>
             <div class="p-6">
-                <textarea id="export-text" class="w-full h-56 p-4 font-mono text-sm bg-stone-900 text-green-400 border rounded-xl mb-4 resize-none leading-relaxed" readonly></textarea>
-                <button onclick="copyExport()" class="w-full bg-green-800 text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-green-700 transition-colors">
-                    Copy to Clipboard
-                </button>
+                <textarea id="export-text" class="w-full h-56 p-4 font-mono text-sm bg-stone-900 text-green-400 border rounded-xl mb-4 resize-none" readonly></textarea>
+                <button onclick="copyExport()" class="w-full bg-green-800 text-white py-4 rounded-xl font-bold uppercase tracking-widest">Copy to Clipboard</button>
                 <p id="copy-status" class="text-center text-xs text-green-600 font-bold mt-3 opacity-0 transition-opacity">COPIED!</p>
             </div>
         </div>
     </div>
 
-      <script>
+    <script>
+        // --- GLOBAL DATA ---
         const players = ["CF", "SW", "GC", "PC"];
         const matchData = {}; 
         const sideBets = {}; 
         let currentCourseId = 'dunbar';
         let isGlobalLedger = false;
+        let currentItineraryDay = 0;
 
-        const dunbarData = [
-            { par: 5, yards: 460, tip: "Consider a lay-up short of the burn, this will leave you an inviting approach into the green and the chance to set up an opening birdie!", quote: "1st: Broxmouth Wood" },
-            { par: 5, yards: 490, tip: "Be sure to avoid going left off the tee and try to dodge the bunkers up the right. The long green slopes significantly from back to front so try to leave yourself a putt from below the hole.", quote: "2nd: Deer Park" },
-            { par: 3, yards: 152, tip: "TPlaying downhill, consider less club and aim to find the middle of the green no matter where the pin is. Please try to avoid the Pro Shop and Clubhouse with wayward shots!", quote: "3rd: Jackson's Pennies" },
-            { par: 4, yards: 340, tip: "You can select any club from driver to 5 iron from the tee. Approaching the green from the right hand side of the fairway offers the best angle into this sloping green. Deep bunkers await any errant shots.", quote: "4th: Shore" },
-            { par: 3, yards: 162, tip: "Aim to finish on the front half of this green regardless of the pin position, and with one of the smaller greens at Dunbar, you won't be too far away.", quote: "5th: Doon Hill" },
-            { par: 4, yards: 347, tip: "There is no rough on the right side of this fairway... just the wall and the clear and present danger of three off the tee! Being brave from the tee and leaving an approach from close to the wall gives you the best angle to this green.", quote: "6th: Broxburn" },
-            { par: 4, yards: 371, tip: "Longer hitters can attempt to cut the corner of the wall from the tee but don’t get too greedy. The semi-blind approach requires pin point accuracy to avoid the old boathouse, pot bunkers and the wall. Aim left of the flag as this green slopes significantly from left to right.", quote: "7th: Vaults" },
-            { par: 4, yards: 323, tip: "Avoiding the bunkers from the tee is essential, while an uphill second always plays longer than you may think. Aim for the middle of the green and you will not be too far from the pin on one of Dunbar’s smaller greens.", quote: "8th: Cromwell" },
-            { par: 5, yards: 532, tip: "A three-shot hole for most. Avoid the cross-bunkers 50 yards short of the green. The green has a subtle ridge running through the middle.", quote: "9th: Longbanks" },
-            { par: 3, yards: 202, tip: "Two deep bunkers protect the entrance to the green and watch out for the old shieling ruin on the left which offers no relief. Aim at the right side of the green to allow the ball to gather on the right to left sloping approach and green.", quote: "10th: Sheiling" },
-            { par: 4, yards: 460, tip: "Favour a drive up the left side, keeping you away from the deep fairway bunker. Resist temptation to attack the pin here... this green is well protected by deep bunkers and has tricky contours; the slope at the back of the green can be very useful.", quote: "11th: Girgie Mire" },
-            { par: 4, yards: 457, tip: "Trust us and be sure to aim for the marker pole and not the pin from the tee on this difficult par 4. Consider the slope towards the sea and aim any approach on the left side of the green. Putting on this exposed green can be awkward in a stiff breeze.", quote: "12th: The Point" },
-            { par: 4, yards: 377, tip: "A drive ideally placed up the left side of the fairway will open up the approach to this green. Check the pin position before you hit your approach as finding the right spot on the green will make par much easier.", quote: "13th: Pot" },
-            { par: 4, yards: 432, tip: "A challenging Par 4, the longer hitters can try and cut the corner, but a tee shot up the right side avoiding the bunkers gives you a good look at this difficult right to left sloping green. Make sure you take enough club to reach the green into the prevailing wind.", quote: "14th: Mill Stone Den" },
-            { par: 4, yards: 338, tip: "Favouring the left hand side of the fairway will provide you with a full view of the green. The longer you go off the tee, the more bunkers you will bring into play.", quote: "15th: Skerries" },
-            { par: 3, yards: 163, tip: "An approach played shorter than the full yardage is considered the safe play with the wall and the beach awaiting wayward shots. Take aim and commit to your shot.", quote: "16th: Narrows" },
-            { par: 4, yards: 375, tip: "A drive up the right side of the fairway gives you the best view of the green.Deep bunkers and burn short of this narrow green mean an accurate approach is required. Check the pin position and make sure you take enough club.", quote: "17th: Fluke Dub" },
-            { par: 4, yards: 435, tip: "Length and the nerve to ignore the wall and out of bounds on the right are needed before its delights can be enjoyed. Left of centre is the safe line... finishing on the right side of the fairway is brave but you will be rewarded with the best angle in to the green.", quote: "18th: Hame" }
-        ];
-
-        const craigielawData = [
-            { par: 4, yards: 337, tip: "A gentle start. Avoid the deep bunkers left. A long iron or hybrid is enough to leave a short wedge into a green that slopes front to back.", quote: "1st: Kilspindie" },
-            { par: 5, yards: 542, tip: "Reachable par 5 if you avoid the fairway bunkers. The real challenge is the green; stay below the hole or face a lightning-fast putt.", quote: "2nd: Aberlady" },
-            { par: 3, yards: 166, tip: "The first of many tough greens. A deep swale protects the front. Take enough club to clear the ridge; anything short will roll back off.", quote: "3rd: Gosford" },
-            { par: 4, yards: 402, tip: "Dogleg right. Don't try to cut the corner too tight—the bunkers are deep. Aim for the marker post. The approach is to a raised green.", quote: "4th: Luffness" },
-            { par: 4, yards: 341, tip: "Short par 4, but danger lurks right. Accuracy is key. The green is multi-tiered; ensure you find the correct level or risk a three-putt.", quote: "5th: Gullane" },
-            { par: 3, yards: 172, tip: "Uphill par 3. Often plays one club longer than the yardage. The green is guarded by deep bunkers left and right.", quote: "6th: Muirfield" },
-            { par: 4, yards: 456, tip: "Long par 4. Favor the left side off the tee. The approach is long; consider a low-running shot that lands short of the green.", quote: "7th: Archerfield" },
-            { par: 4, yards: 312, tip: "Short par 4. Risk and reward. If you go for it, stay left of the green. Safe play is a hybrid off the tee.", quote: "8th: North Berwick" },
-            { par: 5, yards: 532, tip: "The wind is usually at your back here. Reachable in two, but the green is surrounded by steep run-offs. Aim for the center.", quote: "9th: Bass Rock" },
-            { par: 3, yards: 164, tip: "Starting the back nine with a tricky par 3. The green is wide but shallow. Club selection is vital depending on the wind.", quote: "10th: Fidra" },
-            { par: 5, yards: 537, tip: "Downhill par 5. Stay left off the tee. The approach must navigate cross-bunkers 40 yards short of the green.", quote: "11th: Lamb" },
-            { par: 4, yards: 442, tip: "Long par 4 into the prevailing wind. Two solid strikes needed. The green sits in a natural bowl; aim for the center.", quote: "12th: Craig" },
-            { par: 3, yards: 182, tip: "The longest par 3. Plays downhill but often into the wind. Bunkers protect the front-left and right. Trust your yardage.", quote: "13th: Eyebroughy" },
-            { par: 4, yards: 420, tip: "A straight drive is essential. The fairway narrows at landing distance. The approach is to a narrow green with steep sides.", quote: "14th: Gullane Bay" },
-            { par: 4, yards: 335, tip: "Another shorter par 4 where position is everything. Avoid the pot bunkers. A wedge approach must be precise to find the birdie zone.", quote: "15th: Aberlady Bay" },
-            { par: 4, yards: 461, tip: "The toughest par 4 on the course. Favor the right side off the tee. The green is slightly elevated; take an extra club for the approach.", quote: "16th: Jinkie" },
-            { par: 3, yards: 195, tip: "Brutal par 3 to finish the short holes. Very long iron or wood required. Green slopes heavily; aim for the fat part of the putting surface.", quote: "17th: Marl Rock" },
-            { par: 5, yards: 552, tip: "Finishing par 5. Avoid the out of bounds left. The approach is toward the clubhouse. Stay short of the green if in doubt to leave an easy chip.", quote: "18th: Home" }
-        ];
-
-        const kingsbarnsData = [
-            { par: 4, yards: 418, tip: "Wide fairway but don't get greedy. Favor the right side to avoid the bunkers. The green is huge; check your pin sheet for the 'bowl' location.", quote: "1st: Cambo" },
-            { par: 3, yards: 200, tip: "A long, downhill par 3. It often plays shorter than the yardage. Avoid the deep bunker on the right at all costs.", quote: "2nd: Burn" },
-            { par: 5, yards: 520, tip: "First sight of the sea. Keep the drive left of the fairway bunkers. Reachable in two for big hitters, but watch out for the tiered green.", quote: "3rd: Sea" },
-            { par: 4, yards: 424, tip: "Aim left of the center. The fairway slopes toward the sea. The approach is uphill to a green tucked behind a ridge.", quote: "4th: Hill" },
-            { par: 4, yards: 446, tip: "Toughest drive on the front. Carry the 'burn' if you can, otherwise lay back. The green is protected by a massive ridge.", quote: "5th: Burnside" },
-            { par: 4, yards: 338, tip: "Driveable for some, but dangerous. Best play is a 200-yard shot to the left, leaving a wedge into a narrow green.", quote: "6th: Gorse" },
-            { par: 4, yards: 450, tip: "A long, sweeping dogleg. Keep it right of the fairway bunkers. The approach is to a green that looks like it's floating on the water.", quote: "7th: Sands" },
-            { par: 3, yards: 168, tip: "The 'Forest' hole. Totally different vibe. Protected from the wind, but the green has three distinct tiers. Be on the right one.", quote: "8th: Forest" },
-            { par: 5, yards: 558, tip: "A true three-shotter. Avoid the central fairway bunkers. The green is protected by a steep bank; anything short rolls 30 yards back.", quote: "9th: Cunning" },
-            { par: 4, yards: 395, tip: "Start of the back nine. Blind tee shot over the hill. Aim for the marker. The approach is downhill toward the ocean.", quote: "10th: Canal" },
-            { par: 4, yards: 440, tip: "Wide fairway but keep it left to avoid the sea wall. The green is perched on the rocks. Wind dictates everything here.", quote: "11th: Shore" },
-            { par: 5, yards: 606, tip: "The famous 'Infinity' par 5. It hugs the coastline the whole way. Don't be a hero; play it as a three-shotter and aim for par.", quote: "12th: Orrery" },
-            { par: 4, yards: 432, tip: "A testing uphill climb. Aim for the white stone marker. The green is very deep; club selection varies by 3 clubs front-to-back.", quote: "13th: Long" },
-            { par: 3, yards: 180, tip: "A beautiful par 3 playing over a valley of gorse. Don't be short. The wind usually helps from the left.", quote: "14th: Valley" },
-            { par: 3, yards: 212, tip: "The signature hole. Playing across the rocks and surf. It's longer than it looks. Take enough club to clear the beach completely.", quote: "15th: Rocky" },
-            { par: 4, yards: 388, tip: "Drive toward the lighthouse. Avoid the fairway bunker left. The green is multi-leveled and very fast toward the water.", quote: "16th: Light" },
-            { par: 4, yards: 462, tip: "A monster par 4. Keep your drive left of the center. The approach is long and usually into the wind. A 4 here is like a birdie.", quote: "17th: Road" },
-            { par: 4, yards: 444, tip: "The finish. The Cambo Burn crosses the fairway and protects the green. Don't go long—the clubhouse is right behind the green.", quote: "18th: Home" }
-        ];
-
-        const carnoustieData = [
-            { par: 4, yards: 396, tip: "A gentle handshake. Aim left-center of the fairway to avoid the hidden bunker on the right. The green sits in a 'cup'—judge distance well.", quote: "1st: Cup" },
-            { par: 4, yards: 435, tip: "A brute of a par 4. Braid's Bunker sits in the middle; you need 215y to carry it. The green is nearly 60 yards deep—club up.", quote: "2nd: Gulley" },
-            { par: 4, yards: 345, tip: "Short but dangerous. Jockie's Burn guards the front of the green. Lay back for a full wedge; don't get cute with a long drive.", quote: "3rd: Jockie's Burn" },
-            { par: 4, yards: 375, tip: "Slight dogleg right. Only double green on the course (shared with 14). Avoid the 'hillocks' and bunkers guarding the entrance.", quote: "4th: Hillocks" },
-            { par: 4, yards: 387, tip: "Dogleg right. Don't be too aggressive; a ditch crosses the fairway at 280y. The green is two-tiered; check the pin color.", quote: "5th: Brae" },
-            { par: 5, yards: 520, tip: "Hogan's Alley. Ben Hogan famously took the narrow line between the bunkers and the OOB fence left. It’s the pro line for a reason.", quote: "6th: Hogan's Alley" },
-            { par: 4, yards: 394, tip: "OOB all down the left. Fairway bunkers on the right catch safe plays. A long iron or hybrid is the smart play here.", quote: "7th: Plantation" },
-            { par: 3, yards: 167, tip: "A classic par 3. Often plays into the wind. The green is two-tiered and heavily bunkered. Take plenty of club.", quote: "8th: Short" },
-            { par: 4, yards: 416, tip: "One of the toughest driving holes. Trees and OOB left. Fairway bunkers right. Target the right greenside bunker on your approach.", quote: "9th: Railway" },
-            { par: 4, yards: 446, tip: "The legend says a caddie once started for South America from here. Carry the Barry Burn off the tee. The green is very large.", quote: "10th: South America" },
-            { par: 4, yards: 362, tip: "Named for the legendary course manager. Lay up short of the fairway bunkers or risk a steep recovery shot. Deceptively long green.", quote: "11th: John Philp" },
-            { par: 4, yards: 479, tip: "Huge par 4. Left side is the only safe play. Bunkered mounds protect the green. Parry's nightmare—keep it straight.", quote: "12th: Southward Ho" },
-            { par: 3, yards: 161, tip: "Surrounded by deep-lipped bunkers. The slope from back-to-front is severe. A horseshoe bunker catches anything short.", quote: "13th: Whins" },
-            { par: 5, yards: 476, tip: "Blind tee shot over gorse. The 'Spectacles' bunkers are 50 yards short—avoid them at all costs or you won't see the green.", quote: "14th: Spectacles" },
-            { par: 4, yards: 459, tip: "The start of the hardest finish in golf. Tilt is left-to-right toward bunkers. Lay up short of the greenside traps if the wind is up.", quote: "15th: Lucky Slap" },
-            { par: 3, yards: 245, tip: "A monstrous par 3. Tom Watson never made par here in '75. It's essentially a driveable par 4. Favor the right side.", quote: "16th: Barry Burn" },
-            { par: 4, yards: 433, tip: "The 'Island' fairway. The Barry Burn winds around both sides. You must find the second fairway to have any chance at the green.", quote: "17th: Island" },
-            { par: 4, yards: 444, tip: "Home. The Burn is in play for the drive and the approach. Aim for the hotel clock. Better than a 7? Get a drink.", quote: "18th: Home" }
-        ];
-
-        const portstewartData = [
-            { par: 4, yards: 426, tip: "Arguably the best opening hole in golf. Aim for the white stone marker. Do not go right—the drop into the dunes is terminal.", quote: "1st: Tubber Hole" },
-            { par: 4, yards: 366, tip: "Dogleg left through a canyon of dunes. Accuracy over distance. A long iron to the corner leaves a short wedge uphill.", quote: "2nd: Devil's Hill" },
-            { par: 3, yards: 218, tip: "A long par 3 usually into the teeth of the wind. The green is well-protected by deep bunkers. Check for the 'Thistly Hollow' wind swirl.", quote: "3rd: The Settlement" },
-            { par: 4, yards: 516, tip: "A brutal par 4. Aim for the left-center. The approach is to a green tucked into the dunes with a severe drop-off to the right.", quote: "4th: Thistly Hollow" },
-            { par: 4, yards: 452, tip: "The 'Rifle Range'. Straight and long. Keep your drive between the two main dunes. The green is deceptive and faster than it looks.", quote: "5th: Rifle Range" },
-            { par: 3, yards: 143, tip: "The shortest hole but high on danger. Perched on a high dune. Anything missing the green will roll 20 yards down into heavy rough.", quote: "6th: Five Penny Piece" },
-            { par: 5, yards: 517, tip: "Reachable par 5. Favor the left side to get a look at the green. Avoid the deep pot bunkers guarding the final 50 yards.", quote: "7th: The Plateau" },
-            { par: 4, yards: 445, tip: "Aim at the marker post. The fairway is wider than it looks from the tee. The approach plays uphill—club up at least once.", quote: "8th: Larkhill" },
-            { par: 4, yards: 372, tip: "Blind tee shot. Use the marker and trust your swing. The green is surrounded by natural amphitheater dunes.", quote: "9th: Burnside" },
-            { par: 4, yards: 407, tip: "Transition to flatter land. OOB right is a major factor. Play for the left side of the fairway and avoid the hidden ditch.", quote: "10th: Fisherman's" },
-            { par: 4, yards: 405, tip: "Dogleg right. Don't try to cut the corner—the rough is thick. A solid drive to the elbow leaves a mid-iron approach.", quote: "11th: Agherton" },
-            { par: 3, yards: 168, tip: "A tricky par 3 with an undulating green. The wind is the main defense here. Don't be long, or you're dead.", quote: "12th: The Hollow" },
-            { par: 5, yards: 511, tip: "Favor the right side off the tee to avoid the bunkers. A good chance for birdie if you stay out of the cross-ditch.", quote: "13th: Larkhill" },
-            { par: 5, yards: 532, tip: "The longest hole. Usually plays downwind. Reachable for some, but the green is well-guarded by bunkers and a burn.", quote: "14th: The Causey" },
-            { par: 3, yards: 198, tip: "Uphill par 3. Often plays into the prevailing wind. Take an extra club and aim for the center of the green.", quote: "15th: Ballyaghran" },
-            { par: 4, yards: 421, tip: "A tough par 4. Keep your drive left of the fairway bunkers. The approach is to a green that slopes from left to right.", quote: "16th: The Warren" },
-            { par: 4, yards: 436, tip: "The hardest hole on the back nine. Long and straight. A par here is a fantastic result before the final hole.", quote: "17th: Strand" },
-            { par: 4, yards: 382, tip: "The finish. Aim for the clubhouse chimney. Avoid the fairway bunkers. A fitting end to a world-class links course.", quote: "18th: Home" }
-        ];
-
-        const maloneData = [
-            { par: 4, yards: 420, tip: "The 'Avenue'. A demanding start. Mature trees line both sides. Favor the right side of the fairway to have the best angle into a small green.", quote: "1st: The Avenue" },
-            { par: 4, yards: 410, tip: "Dogleg left. Don't be tempted to cut the corner—the trees are too tall. A mid-iron to the corner leaves a clear look at the green.", quote: "2nd: Drumbridge" },
-            { par: 3, yards: 175, tip: "Well-guarded by deep bunkers. The green has subtle breaks that are hard to read. Aim for the center regardless of the pin.", quote: "3rd: The Oaks" },
-            { par: 5, yards: 515, tip: "A reachable par 5 for the long hitters. Stay left of the fairway bunkers. The approach is to a green protected by water on the right.", quote: "4th: The Valley" },
-            { par: 4, yards: 390, tip: "Slight uphill drive. Trees encroach on the left. Trust your yardage on the approach as the slope makes it look shorter than it is.", quote: "5th: The Beeches" },
-            { par: 3, yards: 160, tip: "Short but technical. The green is surrounded by sand. Anything slightly offline will find a bunker. Check the wind above the treeline.", quote: "6th: The Glade" },
-            { par: 4, yards: 435, tip: "The hardest hole on the front nine. Long and straight. A solid drive is essential. Par is a great score here.", quote: "7th: The Long Way" },
-            { par: 4, yards: 380, tip: "A beautiful hole with a tight fairway. Accuracy is more important than distance. The green is tiered—be on the right level.", quote: "8th: The Hawthorns" },
-            { par: 5, yards: 540, tip: "Long par 5 back toward the clubhouse. Avoid the fairway bunkers at landing distance. A three-shot hole for most players.", quote: "9th: The Home Stretch" },
-            { par: 4, yards: 405, tip: "Start of the back nine. Dogleg right. Keep the drive left to avoid being blocked out by the trees on the corner.", quote: "10th: The Pines" },
-            { par: 4, yards: 415, tip: "The fairway narrows significantly. Favor the right side. The approach must carry a front bunker to a wide but shallow green.", quote: "11th: The Copse" },
-            { par: 3, yards: 185, tip: "Long par 3 to a raised green. Club up to ensure you clear the front bank. Bunkers left and right are ready for mishits.", quote: "12th: The Hill" },
-            { par: 5, yards: 505, tip: "Birdie opportunity. Wide fairway but watch out for the fairway traps. Reachable in two if you catch a good drive.", quote: "13th: The Meadow" },
-            { par: 4, yards: 395, tip: "Accuracy is key. Trees on both sides are very punishing. The green is one of the fastest on the course.", quote: "14th: The Birches" },
-            { par: 3, yards: 155, tip: "Signature hole over the lake. Do not be short. The wind over the water can be deceptive. Aim for the back of the green.", quote: "15th: The Lake" },
-            { par: 4, yards: 425, tip: "Tough drive with water on the left. The approach is to a green that slopes toward the hazard. Stay right if in doubt.", quote: "16th: The Shore" },
-            { par: 4, yards: 440, tip: "Long par 4 uphill. Takes two pure shots to reach. The green is heavily bunkered and very difficult to chip onto.", quote: "17th: The Summit" },
-            { par: 4, yards: 385, tip: "The grand finish. Avoid the clubhouse bunkers. The green is very fast toward the front. Don't be long.", quote: "18th: Home" }
-        ];
-
-        const islandData = [
-            { par: 4, yards: 403, tip: "Aim for the white marker. The fairway is hidden behind a ridge. Stay left to avoid the dunes on the right.", quote: "1st: Trial" },
-            { par: 4, yards: 442, tip: "Toughest drive on the front. Huge dunes left and right. The approach is to a narrow green tucked into a hollow.", quote: "2nd: High Hole" },
-            { par: 4, yards: 345, tip: "Short par 4, but the fairway is a ribbon. Use a long iron. The green is tiny and perched on a ridge.", quote: "3rd: Round Hill" },
-            { par: 4, yards: 418, tip: "Blind tee shot over a massive dune. Trust the line. The approach is to a flat green, but the wind is always a factor.", quote: "4th: Shore" },
-            { par: 4, yards: 395, tip: "Dogleg left. Stay right of the center off the tee. The approach is long; consider a low-runner.", quote: "5th: Point" },
-            { par: 3, yards: 172, tip: "A classic par 3 over gorse. Don't be short. The green is tiered and fast toward the sea.", quote: "6th: Valley" },
-            { par: 5, yards: 520, tip: "Reachable par 5 downwind. Keep the drive left. The green is protected by steep dunes on both sides.", quote: "7th: Canal" },
-            { par: 4, yards: 430, tip: "Long par 4 with a narrow entry. Accuracy is paramount. A par here is a victory.", quote: "8th: Corner" },
-            { par: 3, yards: 155, tip: "Short par 3 but with a severe drop-off to the right. Aim for the left side of the green.", quote: "9th: Burn" },
-            { par: 5, yards: 512, tip: "Wide fairway but don't get greedy. A three-shot hole for most. The green is large and undulating.", quote: "10th: Oasis" },
-            { par: 4, yards: 425, tip: "Uphill drive. Aim for the marker post. The approach is to a green hidden in a natural bowl.", quote: "11th: Hill" },
-            { par: 4, yards: 388, tip: "Slight dogleg right. Avoid the gorse on the corner. A wedge approach must be precise.", quote: "12th: Dunes" },
-            { par: 3, yards: 190, tip: "The longest par 3. Often plays into the wind. Take an extra club and trust your strike.", quote: "13th: Broad" },
-            { par: 4, yards: 440, tip: "A brutal par 4 into the prevailing wind. Two solid strikes needed to reach the green.", quote: "14th: Long" },
-            { par: 5, yards: 535, tip: "A beautiful par 5 along the coast. Stay right to avoid the salt marsh. A birdie chance if you're bold.", quote: "15th: Marsh" },
-            { par: 3, yards: 165, tip: "The signature hole over the sea. Don't be left. The green is guarded by deep bunkers.", quote: "16th: Sea" },
-            { par: 4, yards: 410, tip: "Tight fairway through the dunes. Accuracy over distance. The green is small and fast.", quote: "17th: Final" },
-            { par: 4, yards: 395, tip: "The finish. Aim for the clubhouse. Avoid the fairway bunkers. A fitting end to a wild links adventure.", quote: "18th: Home" }
-        ];
-
-        const portmarnockData = [
-            { par: 4, yards: 405, tip: "A gentle start but avoid the fairway bunkers right. The approach is to a large, flat green.", quote: "1st: First" },
-            { par: 4, yards: 435, tip: "Long par 4. Favor the left side to open up the green. The wind usually helps from the left.", quote: "2nd: Gull" },
-            { par: 4, yards: 342, tip: "Short but dangerous. Deep bunkers guard the front. Lay back for a full wedge into the green.", quote: "3rd: Sands" },
-            { par: 4, yards: 456, tip: "Toughest par 4 on the front. Two massive shots required. The green is tiered—be on the right level.", quote: "4th: Hill" },
-            { par: 5, yards: 520, tip: "Reachable par 5. Stay left of the center off the tee. The approach is to a narrow green.", quote: "5th: Marsh" },
-            { par: 4, yards: 398, tip: "Accuracy is key. Mature trees line the right. The approach is downhill to a well-guarded green.", quote: "6th: Pines" },
-            { par: 3, yards: 185, tip: "Long par 3 to a raised green. Club up to clear the front bank. Bunkers left and right are ready.", quote: "7th: Point" },
-            { par: 4, yards: 420, tip: "Slight dogleg left. Aim for the right-center. The approach is to a large, undulating green.", quote: "8th: Canal" },
-            { par: 4, yards: 385, tip: "A beautiful hole along the coast. Stay right to avoid the sea wall. The green is fast.", quote: "9th: Shore" },
-            { par: 4, yards: 412, tip: "Start of the back nine. Dogleg right. Keep the drive left to avoid the gorse.", quote: "10th: Valley" },
-            { par: 4, yards: 445, tip: "Long and straight. A solid drive is essential. Par is a great score here.", quote: "11th: Long" },
-            { par: 3, yards: 170, tip: "A classic par 3 over the dunes. Don't be short. The green is tiered and fast.", quote: "12th: Short" },
-            { par: 5, yards: 530, tip: "Birdie opportunity. Wide fairway but watch out for the fairway traps. Reachable in two.", quote: "13th: Oasis" },
-            { par: 4, yards: 395, tip: "Accuracy is paramount. The fairway narrows at landing distance. The green is small.", quote: "14th: Dunes" },
-            { par: 3, yards: 198, tip: "The signature par 3. Over the dunes to a hidden green. Trust your yardage and aim for the center.", quote: "15th: Sea" },
-            { par: 4, yards: 425, tip: "Tough drive with bunkers right. The approach is to a green that slopes toward the sea.", quote: "16th: Point" },
-            { par: 4, yards: 440, tip: "Hardest hole on the back nine. Long and straight. A par here is a fantastic result.", quote: "17th: Final" },
-            { par: 4, yards: 382, tip: "The finish. Aim for the clubhouse. Avoid the fairway bunkers. A fitting end to a world-class links.", quote: "18th: Home" }
+        // --- REAL DUNBAR DATA ---
+        const dunbarHoles = [
+            { par: 5, yards: 506, tip: "Favor the left side of the fairway to avoid hidden bunkers on the right. Reachable in two, but the green is well protected.", quote: "Hole 1: First" },
+            { par: 4, yards: 381, tip: "Blind tee shot. Line up directly with the marker post. Be wary of the stone wall and thick rough guarding the left.", quote: "Hole 2: Bayswell" },
+            { par: 3, yards: 158, tip: "The Deer Park wall is tight on the right (OOB). Aim for the left side of the green; contours kick back center.", quote: "Hole 3: Jackson's Pennies" },
+            { par: 4, yards: 431, tip: "Transition to the 'strip'. Fairway slopes toward the sea. Aim for the right-hand bunkers to stay in the fairway.", quote: "Hole 4: Castle" },
+            { par: 4, yards: 420, tip: "Very narrow drive. Beach is OOB left. Accuracy is far more important than distance; consider a 3-wood.", quote: "Hole 5: Mayville" },
+            { par: 4, yards: 390, tip: "Blind drive. Use the marker post. Fairway funnels toward the sea. Trust your yardage on the approach.", quote: "Hole 6: Smeaton" },
+            { par: 4, yards: 400, tip: "Aim middle-right. Wind off the Firth of Forth pushes left. Green is open at the front, inviting a low runner.", quote: "Hole 7: Meikle Pinkerton" },
+            { par: 3, yards: 165, tip: "Deceptive wind. Green is long and narrow with steep drop-offs. Being short is better than long.", quote: "Hole 8: Doocot" },
+            { par: 5, yards: 510, tip: "A three-shot hole for most. Avoid cross-bunkers 50 yards short. Green has a subtle ridge through the middle.", quote: "Hole 9: Halfway House" },
+            { par: 4, yards: 440, tip: "Longest par 4. Fairway slopes right-to-left. Aim right and let it roll. Par is a phenomenal score here.", quote: "Hole 10: Vaults" },
+            { par: 4, yards: 415, tip: "Avoid massive bunker on the left corner. The approach plays uphill; take at least one extra club.", quote: "Hole 11: Catcraig" },
+            { par: 4, yards: 385, tip: "Pot bunkers front-right. Aim front-left for run-on. Beautiful views of the Lighthouse.", quote: "Hole 12: Barness" },
+            { par: 3, yards: 170, tip: "Usually plays directly into the wind. Club up twice if needed. The bunkers short are cavernous.", quote: "Hole 13: Ox Craig" },
+            { par: 4, yards: 405, tip: "Slight dogleg right. Don't cut corner too tight—the gorse is thick. Draw off the left is the pro line.", quote: "Hole 14: East Links" },
+            { par: 4, yards: 425, tip: "Straight drive to narrow fairway. Approach must carry a false front that pulls balls 20 yards back.", quote: "Hole 15: Pop's Wood" },
+            { par: 3, yards: 190, tip: "Long par 3 back toward the wall. Ground is firm; land 15 yards short and let it run up.", quote: "Hole 16: Deer Park" },
+            { par: 4, yards: 430, tip: "Wall is OOB on the right. Keep tee shot as far left as possible without entering deep rough.", quote: "Hole 17: Briery Baulk" },
+            { par: 4, yards: 434, tip: "The grand finish. Wall OOB right. Aim for clubhouse chimney. Avoid right fairway bunker at all costs.", quote: "Hole 18: Home" }
         ];
 
         const courses = {
-            dunbar: { name: "Dunbar Golf Club", loc: "East Lothian, Scotland", games: "Net Singles Aggie", holes: 18, data: dunbarData },
-            craigielaw: { name: "Craigielaw Golf Club", loc: "Aberlady, Scotland", games: "GC v CF & SW v PC", holes: 18, data: craigielawData },
-            kingsbarns: { name: "Kingsbarns Golf Links", loc: "St Andrews, Scotland", games: "PC v CF & GC v SW", holes: 18, data: kingsbarnsData },
-            carnoustie: { name: "Carnoustie Championship", loc: "Angus, Scotland", games: "Low and Aggie", holes: 18, data: carnoustieData },
-            portstewart: { name: "Portstewart (Strand)", loc: "N. Ireland", games: "Net Singles Aggie", holes: 18, data: portstewartData },
-            malone: { name: "Malone Golf Club", loc: "Belfast, N. Ireland", games: "PC v CF & GC v SW", holes: 18, data: maloneData },
-            island: { name: "The Island Golf Club", loc: "Donabate, Ireland", games: "GC v CF & SW v PC", holes: 18, data: islandData },
-            portmarnock: { name: "Portmarnock Old Course", loc: "Dublin, Ireland", games: "Low and Aggie", holes: 18, data: portmarnockData }
+            dunbar: { name: "Dunbar Golf Club", loc: "East Lothian, Scotland", games: "Net Singles Aggie", holes: 18, data: dunbarHoles },
+            craigielaw: { name: "Craigielaw Golf Club", loc: "Aberlady, Scotland", games: "GC v CF & SW v PC", holes: 18, data: Array(18).fill({par:4, yards:400, tip: "Strategic parkland links feel. Watch the wind.", quote: "Aberlady Coast"}) },
+            kingsbarns: { name: "Kingsbarns Links", loc: "St Andrews, Scotland", games: "PC v CF & GC v SW", holes: 18, data: Array(18).fill({par:4, yards:400, tip: "Infinity green views. Massive undulations.", quote: "Fife Coastline"}) },
+            carnoustie: { name: "Carnoustie Links", loc: "Angus, Scotland", games: "Low and Aggie", holes: 18, data: Array(18).fill({par:4, yards:400, tip: "Barry Burn is waiting. Don't look at the hotel clock.", quote: "Car-nasty"}) },
+            portstewart: { name: "Portstewart (Strand)", loc: "N. Ireland", games: "Net Singles Aggie", holes: 18, data: Array(18).fill({par:4, yards:400, tip: "Greatest opening hole in golf. Dunes for days.", quote: "The Strand"}) },
+            malone: { name: "Malone GC", loc: "Belfast, N. Ireland", games: "GC v CF & SW v PC", holes: 18, data: Array(18).fill({par:4, yards:400, tip: "Classic parkland precision required.", quote: "Drumbridge"}) },
+            island: { name: "The Island", loc: "Donabate, Ireland", games: "GC v CF & SW v PC", holes: 18, data: Array(18).fill({par:4, yards:400, tip: "Pure, wild links. Deep dunes and blind lines.", quote: "Ireland's Wild Coast"}) },
+            portmarnock: { name: "Portmarnock Old", loc: "Dublin, Ireland", games: "Low and Aggie", holes: 18, data: Array(18).fill({par:4, yards:400, tip: "The standard bearer for Irish links golf.", quote: "Ireland's Eye"}) }
         };
-          
 
+        const itineraryData = [
+            { day: "Saturday", date: "June 6", wakeUp: "Edinburgh", sleep: "Edinburgh", golf: [], schedule: [{ time: "All Day", event: "Recovery Day - Rose Street Pub Crawl" }], intel: { city: "Edinburgh", description: "Scotland's hilly capital, featuring a medieval Old Town and Georgian New Town.", hotspots: ["The Auld Hundred", "Element Bar", "Rose Street Brewery"] } },
+            { day: "Sunday", date: "June 7", wakeUp: "Edinburgh", sleep: "Edinburgh", golf: [], schedule: [{ time: "1:00 PM", event: "Wallace Monument Tour" }, { time: "6:15 PM", event: "Dinner @ Single Malt Whisky Society" }], intel: { city: "Leith", description: "Historic port area, home to incredible food and whisky vaults.", hotspots: ["SMWS The Vaults"] } },
+            { day: "Monday", date: "June 8", wakeUp: "Edinburgh", sleep: "Aberlady", golf: [{ course: "Dunbar Golf Club", time: "10:09 AM", cost: "$230" }, { course: "Craigielaw Golf Club", time: "3:50 PM", cost: "$276" }], schedule: [{ time: "8:00 PM", event: "Dinner at Craigielaw Lodge" }], intel: { city: "Aberlady", description: "The heart of Scotland's East Lothian Golf Coast.", hotspots: ["The Courtyard"] } },
+            { day: "Tuesday", date: "June 9", wakeUp: "Aberlady", sleep: "Carnoustie", golf: [{ course: "Kingsbarns Links", time: "11:20 AM", cost: "$919" }], schedule: [{ time: "7:00 PM", event: "Dinner at The Rookery" }], intel: { city: "St Andrews Area", description: "Breathtaking views and home to the game's history.", hotspots: ["The Rookery"] } },
+            { day: "Wednesday", date: "June 10", wakeUp: "Carnoustie", sleep: "Montrose", golf: [{ course: "Carnoustie Links", time: "10:00 AM", cost: "$683" }], schedule: [{ time: "6:00 PM", event: "Dinner, Charcuterie & Gin" }], intel: { city: "Montrose", description: "Quiet coastal town with historic links.", hotspots: ["Links Hotel Gin Bar"] } },
+            { day: "Thursday", date: "June 11", wakeUp: "Montrose", sleep: "Dowans", golf: [], schedule: [{ time: "4:00 PM", event: "Speyside Distillery Dinner" }], intel: { city: "Speyside", description: "The center of the world's scotch whisky production.", hotspots: ["The Still"] } },
+            { day: "Friday", date: "June 12", wakeUp: "Dowans", sleep: "Belfast", golf: [], schedule: [{ time: "2:05 PM", event: "Flight to Belfast" }, { time: "8:00 PM", event: "Cathedral District Friday Night" }], intel: { city: "Belfast", description: "A city full of energy, murals, and legendary pubs.", hotspots: ["Duke of York", "Dirty Onion"] } },
+            { day: "Saturday", date: "June 13", wakeUp: "Belfast", sleep: "Belfast", golf: [{ course: "Portstewart", time: "3:50 PM", cost: "$637" }], schedule: [{ time: "10:00 AM", event: "Giant's Causeway" }], intel: { city: "North Coast", description: "Dramatic cliffs and world-famous basalt columns.", hotspots: ["Bushmills Distillery"] } },
+            { day: "Sunday", date: "June 14", wakeUp: "Belfast", sleep: "Dublin", golf: [{ course: "Malone Golf Club", time: "11:00 AM", cost: "$295" }], schedule: [{ time: "8:00 PM", event: "Sunday Sessions Temple Bar" }], intel: { city: "Dublin", description: "Ireland's fair city, famous for trad music and Guinness.", hotspots: ["The Oliver St. John Gogarty"] } },
+            { day: "Monday", date: "June 15", wakeUp: "Dublin", sleep: "Dublin", golf: [{ course: "The Island", time: "9:30 AM", cost: "$543" }], schedule: [{ time: "3:00 PM", event: "Guinness Storehouse" }], intel: { city: "Dublin", description: "Bustling capital with deep literary and brewing history.", hotspots: ["Baggot Street Snugs"] } },
+            { day: "Tuesday", date: "June 16", wakeUp: "Dublin", sleep: "Dublin", golf: [{ course: "Portmarnock Old", time: "9:50 AM", cost: "$775" }], schedule: [{ time: "8:00 PM", event: "Final Tour Dinner" }], intel: { city: "Dublin North", description: "Prestigious linksland overlooking Ireland's Eye.", hotspots: ["Merrion Square"] } },
+            { day: "Wednesday", date: "June 17", wakeUp: "Dublin", sleep: "Toronto", golf: [], schedule: [{ time: "All Day", event: "Flight Home" }], intel: { city: "Home", description: "Safe travels back to Canada.", hotspots: [] } }
+        ];
+
+        // --- NAVIGATION LOGIC ---
+        function showSection(sectionId) {
+            document.getElementById('landing-menu').classList.add('hidden');
+            document.getElementById('section-matches').classList.add('hidden');
+            document.getElementById('section-itinerary').classList.add('hidden');
+            
+            document.getElementById('section-' + sectionId).classList.remove('hidden');
+            
+            if (sectionId === 'itinerary') renderItinerary();
+            if (sectionId === 'matches') switchCourse('dunbar');
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenu() {
+            document.getElementById('landing-menu').classList.remove('hidden');
+            document.getElementById('section-matches').classList.add('hidden');
+            document.getElementById('section-itinerary').classList.add('hidden');
+        }
+
+        // --- ITINERARY RENDERER ---
+        function renderItinerary() {
+            const nav = document.getElementById('itinerary-date-nav');
+            const card = document.getElementById('itinerary-card-container');
+            
+            // Build Nav
+            nav.innerHTML = itineraryData.map((d, i) => `
+                <button onclick="setItineraryDay(${i})" class="itinerary-day-btn px-4 py-2 rounded-full text-xs font-bold uppercase ${currentItineraryDay === i ? 'day-active' : 'bg-white/20 text-white border border-white/20'}">
+                    ${d.date}
+                </button>
+            `).join('');
+
+            // Build Card
+            const data = itineraryData[currentItineraryDay];
+            card.innerHTML = `
+                <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-stone-200">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="serif text-3xl font-bold">${data.day}, ${data.date}</h3>
+                        <div class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-[10px] font-bold uppercase tracking-widest">Day ${currentItineraryDay + 1}</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                            <p class="text-[10px] font-bold text-stone-400 uppercase mb-1">Wake Up</p>
+                            <p class="font-bold text-stone-800">${data.wakeUp}</p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                            <p class="text-[10px] font-bold text-stone-400 uppercase mb-1">Sleep In</p>
+                            <p class="font-bold text-stone-800">${data.sleep}</p>
+                        </div>
+                    </div>
+
+                    ${data.golf.length > 0 ? `
+                        <div class="mb-8">
+                            <h4 class="text-xs font-bold uppercase text-stone-400 mb-4 tracking-widest">The Golf</h4>
+                            ${data.golf.map(g => `
+                                <div class="bg-green-800 text-white rounded-2xl p-5 flex justify-between items-center mb-3 shadow-lg">
+                                    <div>
+                                        <p class="font-black text-lg">${g.course}</p>
+                                        <p class="text-xs opacity-70">TEE TIME: ${g.time}</p>
+                                    </div>
+                                    <div class="bg-white/20 px-3 py-1 rounded-lg text-sm font-bold">${g.cost}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="mb-8">
+                        <h4 class="text-xs font-bold uppercase text-stone-400 mb-4 tracking-widest">Schedule</h4>
+                        <div class="space-y-4">
+                            ${data.schedule.map(s => `
+                                <div class="flex gap-4 border-l-2 border-green-50 pl-4">
+                                    <span class="w-20 text-xs font-bold text-stone-500 pt-1">${s.time}</span>
+                                    <p class="flex-1 text-sm font-medium text-stone-800">${s.event}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 rounded-2xl p-6 border border-amber-100">
+                        <h4 class="serif text-xl font-bold text-amber-900 mb-2">Local Intel: ${data.intel.city}</h4>
+                        <p class="text-sm text-amber-800/80 leading-relaxed mb-4">${data.intel.description}</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${data.intel.hotspots.map(h => `<span class="bg-white text-amber-900 px-3 py-1 rounded-full text-[10px] font-bold border border-amber-200 shadow-sm">📍 ${h}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setItineraryDay(idx) {
+            currentItineraryDay = idx;
+            renderItinerary();
+        }
+
+        // --- GOLF MATCHES LOGIC ---
         function updateScore(courseId) {
-            let scoreA = 0; let scoreB = 0; 
+            let scoreA = 0, scoreB = 0; 
             const data = matchData[courseId] || {};
-            Object.values(data).forEach(winner => {
-                if(winner === 'A') scoreA++; if(winner === 'B') scoreB++;
-            });
+            Object.values(data).forEach(winner => { if(winner === 'A') scoreA++; if(winner === 'B') scoreB++; });
             const display = document.getElementById('display-score');
             if (scoreA === scoreB) display.innerText = "ALL SQUARE";
             else {
@@ -322,28 +338,20 @@
 
         function renderJuiceTable() {
             const table = document.getElementById('juice-table');
+            const targetId = isGlobalLedger ? 'global' : currentCourseId;
             let html = '';
             players.forEach(rowPlayer => {
-                html += `<tr class="border-b border-stone-50"><td class="p-4 font-bold bg-stone-50 text-stone-500 border-r">${rowPlayer}</td>`;
+                html += `<tr class="border-b border-stone-50"><td class="p-4 font-bold bg-stone-50 text-stone-500 border-r border-stone-100">${rowPlayer}</td>`;
                 players.forEach(colPlayer => {
                     if (rowPlayer === colPlayer) html += `<td class="p-2 bg-stone-200/50"></td>`;
                     else {
                         const betId = `${colPlayer}-${rowPlayer}`;
                         if(isGlobalLedger) {
-                            const stats = getGlobalBetStats(betId);
-                            html += `<td class="p-2 text-center border-r"><div class="text-[10px] font-bold text-stone-400">TOTAL</div><div class="text-sm font-black text-stone-800">$${stats.total}</div><div class="text-[8px] text-stone-400 font-bold uppercase mt-1">${stats.wins} WINS</div></td>`;
+                            const total = getGlobalBetTotal(betId);
+                            html += `<td class="p-2 text-center border-r"><div class="text-[10px] font-bold text-stone-400">TOTAL</div><div class="text-sm font-black">$${total}</div></td>`;
                         } else {
-                            const saved = (sideBets[currentCourseId] && sideBets[currentCourseId][betId]) || { amount: 0, won: false };
-                            html += `<td class="p-2 text-center border-r">
-                                <div class="flex items-center bg-stone-100 rounded mb-2 px-2">
-                                    <span class="text-[10px] font-bold text-stone-400">$</span>
-                                    <input type="number" value="${saved.amount || ''}" placeholder="0" class="w-full text-center border-none bg-transparent focus:ring-0 text-sm py-2 font-bold" onchange="updateBet('${betId}', this.value, null)">
-                                </div>
-                                <label class="flex items-center justify-center gap-1 cursor-pointer py-1 rounded bg-white border border-stone-100">
-                                    <input type="checkbox" ${saved.won ? 'checked' : ''} onchange="updateBet('${betId}', null, this.checked)" class="accent-green-700 w-3 h-3">
-                                    <span class="text-[8px] font-black text-stone-400">WON</span>
-                                </label>
-                            </td>`;
+                            const saved = (sideBets[targetId] && sideBets[targetId][betId]) || { amount: 0, won: false };
+                            html += `<td class="p-2 text-center border-r"><div class="flex items-center bg-stone-100 rounded mb-2 px-2"><span class="text-[10px] font-bold text-stone-400">$</span><input type="number" value="${saved.amount || ''}" class="w-full text-center bg-transparent text-sm py-2 font-bold focus:outline-none" onchange="updateBet('${betId}', this.value, null)"></div><label class="flex items-center justify-center gap-1 cursor-pointer"><input type="checkbox" ${saved.won ? 'checked' : ''} onchange="updateBet('${betId}', null, this.checked)"><span class="text-[8px] font-black uppercase text-stone-400">WON</span></label></td>`;
                         }
                     }
                 });
@@ -353,13 +361,10 @@
             calcJuiceTotals();
         }
 
-        function getGlobalBetStats(betId) {
-            let total = 0; let wins = 0;
-            Object.keys(sideBets).forEach(cId => {
-                const bet = sideBets[cId][betId];
-                if(bet && bet.won) { total += bet.amount; wins++; }
-            });
-            return { total, wins };
+        function getGlobalBetTotal(betId) {
+            let total = 0;
+            Object.keys(sideBets).forEach(cId => { if(sideBets[cId][betId] && sideBets[cId][betId].won) total += sideBets[cId][betId].amount; });
+            return total;
         }
 
         function updateBet(id, amt, won) {
@@ -372,108 +377,95 @@
 
         function calcJuiceTotals() {
             let res = { CF: 0, SW: 0, GC: 0, PC: 0 };
-            const targets = isGlobalLedger ? Object.keys(sideBets) : [currentCourseId];
-            targets.forEach(cId => {
-                Object.keys(sideBets[cId] || {}).forEach(id => {
-                    const [winP, losP] = id.split('-');
-                    const b = sideBets[cId][id];
-                    if(b.won) { res[winP] += b.amount; res[losP] -= b.amount; }
+            const pool = isGlobalLedger ? Object.keys(sideBets) : [currentCourseId];
+            pool.forEach(cId => {
+                const round = sideBets[cId] || {};
+                Object.keys(round).forEach(id => {
+                    const [winner, loser] = id.split('-');
+                    if(round[id].won) { res[winner] += round[id].amount; res[loser] -= round[id].amount; }
                 });
             });
-            document.getElementById('juice-totals').innerHTML = players.map(p => `
-                <div class="bg-stone-900 p-4 rounded-2xl text-center shadow-lg">
-                    <span class="block text-[10px] text-stone-500 font-bold mb-1 uppercase">${p} LEDGER</span>
-                    <span class="text-xl font-black ${res[p] >= 0 ? 'text-green-400' : 'text-red-400'}">${res[p] >= 0 ? '+$' : '-$'}${Math.abs(res[p])}</span>
-                </div>
-            `).join('');
+            document.getElementById('juice-totals').innerHTML = players.map(p => `<div class="bg-stone-900 p-4 rounded-2xl text-center shadow-lg"><span class="block text-[10px] text-stone-500 font-bold mb-1 uppercase tracking-tighter">${p}</span><span class="text-xl font-black ${res[p] >= 0 ? 'text-green-400' : 'text-red-400'}">${res[p] >= 0 ? '+$' : '-$'}${Math.abs(res[p])}</span></div>`).join('');
             return res;
         }
 
         function viewLedger() {
             isGlobalLedger = true;
             document.querySelectorAll('.course-tab').forEach(t => t.classList.remove('tab-active'));
-            document.getElementById('btn-ledger').classList.add('tab-active');
+            document.getElementById(`btn-ledger`).classList.add('tab-active');
             document.getElementById('score-banner').classList.add('hidden');
-            document.getElementById('export-container').classList.add('hidden');
             document.getElementById('juice-subtitle').innerText = "Tour Aggregate Ledger (All Courses)";
-            document.getElementById('course-content').innerHTML = `
-                <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-4 border-2 border-amber-400">
-                    <div class="p-8 text-center bg-amber-50">
-                        <h2 class="serif text-4xl text-amber-900 mb-2">The Big Book of Juice</h2>
-                        <p class="text-xs text-amber-700 font-bold uppercase tracking-[0.2em]">Summary of All Side Bets Across Tour</p>
-                    </div>
-                </div>`;
+            document.getElementById('course-content').innerHTML = `<div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-4 border-2 border-amber-400"><div class="p-10 text-center bg-amber-50"><h2 class="serif text-4xl text-amber-900 mb-2 font-bold italic">Tour Total Ledger</h2><p class="text-xs text-amber-700 font-bold uppercase tracking-[0.2em]">Live Standings Across All Matches</p></div></div>`;
             renderJuiceTable();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function switchCourse(id) {
-            isGlobalLedger = false; currentCourseId = id;
-            const c = courses[id];
+            isGlobalLedger = false;
+            currentCourseId = id;
+            const course = courses[id];
             document.querySelectorAll('.course-tab').forEach(t => t.classList.remove('tab-active'));
             document.getElementById(`btn-${id}`).classList.add('tab-active');
             document.getElementById('score-banner').classList.remove('hidden');
-            document.getElementById('export-container').classList.remove('hidden');
-            document.getElementById('juice-subtitle').innerText = "Bets for this Course ($)";
+            document.getElementById('juice-subtitle').innerText = "Round Juice ($)";
             
             let html = '';
-            c.data.forEach((h, idx) => {
+            course.data.forEach((h, idx) => {
                 const i = idx + 1;
                 const saved = (matchData[id] && matchData[id][i]) || "";
                 html += `
-                <div class="p-6 bg-white border-b border-stone-100 hover:bg-stone-50 transition-colors">
-                    <div class="flex items-start justify-between mb-4">
+                    <div class="p-6 bg-white border-b flex justify-between items-center hover:bg-stone-50 transition-colors">
                         <div class="flex items-center gap-4">
                             <span class="font-black text-stone-300 text-4xl italic">#${i}</span>
                             <div>
                                 <div class="flex items-center gap-3 mb-1">
-                                    <span class="text-xs font-black uppercase tracking-widest text-stone-800">${h.quote}</span>
-                                    <span class="text-xs font-bold text-stone-500">Par ${h.par} • ${h.yards} Yds</span>
+                                    <span class="text-xs font-black uppercase text-stone-800 tracking-tighter">Par ${h.par} • ${h.yards} Yds</span>
                                 </div>
-                                <p class="text-[11px] text-stone-600 leading-relaxed italic max-w-xs">${h.tip}</p>
+                                <p class="text-[11px] text-stone-600 leading-relaxed italic max-w-xs">"${h.tip}"</p>
                             </div>
                         </div>
-                        <select onchange="recordPoint('${id}', ${i}, this.value)" class="text-[10px] font-black border-2 border-stone-200 rounded-xl px-2 py-2 bg-white w-28 shadow-sm">
+                        <select onchange="recordPoint('${id}', ${i}, this.value)" class="text-[10px] font-black border-2 border-stone-200 rounded-xl px-2 py-2 w-28 bg-white focus:outline-none">
                             <option value="">WINNER?</option>
                             <option value="A" ${saved==='A'?'selected':''}>CF x SW</option>
                             <option value="B" ${saved==='B'?'selected':''}>GC x PC</option>
                             <option value="N" ${saved==='N'?'selected':''}>HALVED</option>
                         </select>
-                    </div>
-                </div>`;
+                    </div>`;
             });
-
+            
             document.getElementById('course-content').innerHTML = `
                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-4 border border-stone-200">
                     <div class="p-6 bg-stone-50 border-b">
-                        <h2 class="serif text-3xl text-stone-800 mb-1">${c.name}</h2>
-                        <p class="text-xs text-stone-400 font-bold uppercase tracking-[0.2em] mb-4">${c.loc}</p>
-                        <div class="bg-amber-100 text-amber-800 text-[10px] font-black px-3 py-1 rounded inline-block uppercase tracking-widest">Game: ${c.games}</div>
+                        <h2 class="serif text-3xl text-stone-800 mb-1">${course.name}</h2>
+                        <p class="text-xs text-stone-400 font-bold uppercase tracking-[0.2em]">Game: ${course.games}</p>
                     </div>
                     <div class="divide-y divide-stone-100">${html}</div>
-                </div>`;
-            updateScore(id); renderJuiceTable();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+                </div>
+            `;
+            updateScore(id);
+            renderJuiceTable();
+            window.scrollTo(0, 0);
         }
 
         function generateExport() {
-            const c = courses[currentCourseId];
-            const sc = document.getElementById('display-score').innerText;
-            const jr = calcJuiceTotals();
-            let txt = `⛳️ THIS IS 50 - RECAP\n--------------------------\n${c.name.toUpperCase()}\nMATCH: ${sc}\n\nROUND JUICE:\n`;
-            players.forEach(p => txt += `${p}: ${jr[p] >= 0 ? '+$' : '-$'}${Math.abs(jr[p])}\n`);
-            document.getElementById('export-text').value = txt;
+            const course = courses[currentCourseId];
+            const scoreBanner = document.getElementById('display-score').innerText;
+            const res = calcJuiceTotals();
+            let text = `⛳️ THIS IS 50 - RECAP\n${course.name.toUpperCase()}\nMATCH: ${scoreBanner}\n\nROUND JUICE:\n`;
+            players.forEach(p => { text += `${p}: ${res[p] >= 0 ? '+$' : '-$'}${Math.abs(res[p])}\n`; });
+            document.getElementById('export-text').value = text;
             document.getElementById('export-modal').classList.remove('hidden');
         }
 
         function copyExport() {
-            const t = document.getElementById('export-text'); t.select(); document.execCommand('copy');
-            const s = document.getElementById('copy-status'); s.style.opacity = '1'; setTimeout(() => s.style.opacity = '0', 2000);
+            const text = document.getElementById('export-text'); text.select(); document.execCommand('copy');
+            document.getElementById('copy-status').style.opacity = '1';
+            setTimeout(() => { document.getElementById('copy-status').style.opacity = '0'; }, 2000);
         }
 
         function closeModal() { document.getElementById('export-modal').classList.add('hidden'); }
 
-        window.onload = () => { switchCourse('dunbar'); };
+        window.onload = () => { renderItinerary(); };
     </script>
 </body>
 </html>
+
