@@ -59,7 +59,21 @@
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">End Date</label>
                     <input type="date" id="input-end" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <button id="btn-build" class="w-full py-5 mt-4 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl font-black uppercase tracking-widest transition-all shadow-xl active:scale-scale-95">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Commissioner Email</label>
+                <input type="email" id="input-email" placeholder="For your records" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">The Crew (Comma Separated)</label>
+                <textarea id="input-players" rows="3" placeholder="Greg, Parker, Scott, Craig" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                <p class="text-[10px] text-stone-400 mt-2">These initials/names will be used for the ledger and time machine features.</p>
+            </div>
+
+            <button id="btn-build" class="w-full py-5 mt-4 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl font-black uppercase tracking-widest transition-all shadow-xl active:scale-95">
                 Initialize Trip
             </button>
             <p id="error-message" class="text-rose-500 text-xs text-center font-bold hidden"></p>
@@ -110,7 +124,7 @@
             <div class="bg-white rounded-3xl shadow-xl border border-stone-200 p-6">
                 <div class="flex justify-between items-center mb-6 border-b border-stone-100 pb-4">
                     <h3 class="serif text-2xl text-stone-900 font-bold">Itinerary</h3>
-                    <button onclick="openModal('itinerary-modal')" class="bg-stone-900 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition">Add Day +</button>
+                    <button onclick="openAddItineraryModal()" class="bg-stone-900 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition">Add Day +</button>
                 </div>
                 <div id="itinerary-list" class="space-y-3">
                     <p class="text-stone-400 text-sm italic">No itinerary days added yet.</p>
@@ -121,7 +135,7 @@
             <div class="bg-white rounded-3xl shadow-xl border border-stone-200 p-6">
                 <div class="flex justify-between items-center mb-6 border-b border-stone-100 pb-4">
                     <h3 class="serif text-2xl text-stone-900 font-bold">Golf Matches</h3>
-                    <button onclick="openMatchModal()" class="bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-700 transition">Add Course +</button>
+                    <button onclick="openAddMatchModal()" class="bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-700 transition">Add Course +</button>
                 </div>
                 <div id="matches-list" class="space-y-3">
                     <p class="text-stone-400 text-sm italic">No golf matches added yet.</p>
@@ -254,6 +268,11 @@
         let activeTripId = null;
         let activeTripData = null;
         let masterCoursesCache = {}; // Object to map course names to their full data
+        
+        let editingItineraryId = null;
+        let editingMatchId = null;
+        let itineraryCache = {};
+        let matchesCache = {};
 
         // Boot Sequence
         async function boot() {
@@ -378,33 +397,56 @@
 
             const itnSnap = await getDocs(collection(db, 'trips', activeTripId, 'itinerary'));
             const itnList = document.getElementById('itinerary-list');
+            itineraryCache = {};
             if (itnSnap.empty) {
                 itnList.innerHTML = `<p class="text-stone-400 text-sm italic">No itinerary days added yet.</p>`;
             } else {
                 itnList.innerHTML = '';
                 // Sort by date to ensure they are listed in order
                 let days = [];
-                itnSnap.forEach(doc => days.push(doc.data()));
+                itnSnap.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    itineraryCache[doc.id] = data;
+                    days.push(data);
+                });
                 days.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
                 
                 days.forEach(data => {
-                    itnList.innerHTML += `<div class="bg-stone-50 border rounded-lg p-3 text-sm flex justify-between"><span class="font-bold text-stone-700">${data.day}</span><span class="text-stone-500">${data.date}</span></div>`;
+                    itnList.innerHTML += `
+                        <div class="bg-stone-50 border rounded-lg p-3 text-sm flex justify-between items-center">
+                            <div><span class="font-bold text-stone-700">${data.day}</span><span class="text-stone-500 ml-2">${data.date}</span></div>
+                            <button onclick="editItinerary('${data.id}')" class="text-[10px] text-stone-500 hover:text-indigo-600 font-bold uppercase tracking-widest transition">Edit</button>
+                        </div>`;
                 });
             }
 
             const mtchSnap = await getDocs(collection(db, 'trips', activeTripId, 'matches'));
             const mtchList = document.getElementById('matches-list');
+            matchesCache = {};
             if (mtchSnap.empty) {
                 mtchList.innerHTML = `<p class="text-stone-400 text-sm italic">No golf matches added yet.</p>`;
             } else {
                 mtchList.innerHTML = '';
                 let matches = [];
-                mtchSnap.forEach(doc => matches.push(doc.data()));
+                mtchSnap.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    matchesCache[doc.id] = data;
+                    matches.push(data);
+                });
                 matches.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
                 
                 matches.forEach(data => {
                     const statusTag = data.pendingData ? `<span class="text-[9px] text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-bold uppercase">Pending Yardages</span>` : `<span class="text-[9px] text-emerald-500 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold uppercase">Ready</span>`;
-                    mtchList.innerHTML += `<div class="bg-stone-50 border rounded-lg p-3 text-sm flex justify-between items-center"><span class="font-bold text-stone-700">${data.course}</span><div class="flex items-center gap-3">${statusTag}<span class="text-stone-500">${data.date}</span></div></div>`;
+                    mtchList.innerHTML += `
+                        <div class="bg-stone-50 border rounded-lg p-3 text-sm flex justify-between items-center">
+                            <span class="font-bold text-stone-700">${data.course}</span>
+                            <div class="flex items-center gap-3">
+                                ${statusTag}<span class="text-stone-500">${data.date}</span>
+                                <button onclick="editMatch('${data.id}')" class="text-[10px] text-stone-500 hover:text-indigo-600 font-bold uppercase tracking-widest transition ml-2">Edit</button>
+                            </div>
+                        </div>`;
                 });
             }
         }
@@ -412,6 +454,80 @@
         // 3. Modals & Smart Lookups
         window.openModal = (id) => { document.getElementById(id).classList.remove('hidden'); };
         window.closeModal = (id) => { document.getElementById(id).classList.add('hidden'); };
+
+        window.openAddItineraryModal = () => {
+            editingItineraryId = null;
+            ['itn-day', 'itn-date', 'itn-quote', 'itn-wake', 'itn-sleep', 'itn-city', 'itn-hotel', 'itn-desc'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('city-lookup-status').innerText = "";
+            document.getElementById('btn-save-itinerary').innerText = "Save Day";
+            openModal('itinerary-modal');
+        };
+
+        window.editItinerary = (id) => {
+            editingItineraryId = id;
+            const data = itineraryCache[id];
+            if(!data) return;
+
+            document.getElementById('itn-day').value = data.day || '';
+            document.getElementById('itn-date').value = data.date || '';
+            document.getElementById('itn-quote').value = data.quote || '';
+            document.getElementById('itn-wake').value = data.wakeUp || '';
+            document.getElementById('itn-sleep').value = data.sleep || '';
+            document.getElementById('itn-city').value = data.intel?.city || '';
+            document.getElementById('itn-hotel').value = data.intel?.hotel || '';
+            document.getElementById('itn-desc').value = data.intel?.description || '';
+            
+            document.getElementById('city-lookup-status').innerText = "";
+            document.getElementById('btn-save-itinerary').innerText = "Update Day";
+            openModal('itinerary-modal');
+        };
+
+        window.openAddMatchModal = () => {
+            editingMatchId = null;
+            document.getElementById('course-lookup-status').innerText = "";
+            document.getElementById('m-course-custom').classList.add('hidden');
+            ['m-date', 'm-time', 'm-matchup', 'm-teamA', 'm-teamB', 'm-video', 'm-course-custom'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('btn-save-match').innerText = "Save Match to Trip";
+            fetchMasterCourses().then(() => openModal('match-modal'));
+        };
+
+        window.editMatch = (id) => {
+            editingMatchId = id;
+            const data = matchesCache[id];
+            if(!data) return;
+
+            document.getElementById('m-date').value = data.date || '';
+            document.getElementById('m-time').value = data.time || '';
+            document.getElementById('m-matchup').value = data.matchUp || '';
+            document.getElementById('m-teamA').value = data.teamA || '';
+            document.getElementById('m-teamB').value = data.teamB || '';
+            document.getElementById('m-video').value = data.video || '';
+            document.getElementById('course-lookup-status').innerText = "";
+
+            document.getElementById('btn-save-match').innerText = "Update Match";
+            
+            fetchMasterCourses().then(() => {
+                const select = document.getElementById('m-course-select');
+                const options = Array.from(select.options).map(o => o.value);
+                
+                if (options.includes(data.course)) {
+                    select.value = data.course;
+                    document.getElementById('m-course-custom').classList.add('hidden');
+                } else {
+                    select.value = 'CUSTOM_ADD';
+                    document.getElementById('m-course-custom').value = data.course;
+                    document.getElementById('m-course-custom').classList.remove('hidden');
+                }
+                openModal('match-modal');
+            });
+        };
+
+        window.openCrewModal = () => {
+            if (activeTripData && activeTripData.players) {
+                document.getElementById('edit-players-input').value = activeTripData.players.join(', ');
+            }
+            openModal('crew-modal');
+        };
 
         // Fetch Master Courses for Dropdown
         async function fetchMasterCourses() {
@@ -542,13 +658,20 @@
                     description: document.getElementById('itn-desc').value,
                     hotspots: []
                 },
-                createdAt: new Date().toISOString()
+                updatedAt: new Date().toISOString()
             };
 
-            await addDoc(collection(db, 'trips', activeTripId, 'itinerary'), payload);
+            if (editingItineraryId) {
+                await setDoc(doc(db, 'trips', activeTripId, 'itinerary', editingItineraryId), payload, { merge: true });
+            } else {
+                payload.createdAt = new Date().toISOString();
+                await addDoc(collection(db, 'trips', activeTripId, 'itinerary'), payload);
+            }
             
             ['itn-day', 'itn-date', 'itn-quote', 'itn-wake', 'itn-sleep', 'itn-city', 'itn-hotel', 'itn-desc'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('city-lookup-status').innerText = "";
+            editingItineraryId = null;
+            
             closeModal('itinerary-modal');
             btn.innerText = "Save Day"; btn.disabled = false;
             fetchDashboardData();
@@ -578,10 +701,15 @@
                 return;
             }
             
-            // If course wasn't found in DB, generate 18 blank placeholder holes
-            const holes = courseData && courseData.holes ? courseData.holes : Array.from({length: 18}, (_, i) => ({
-                number: i + 1, par: 4, yardage: 0, name: "", tip: "BoysTrip Caddies are scouting this hole. Tip pending!"
-            }));
+            // Smart Holes Logic: Preserve existing holes if editing and the course hasn't changed
+            let holes = [];
+            if (editingMatchId && matchesCache[editingMatchId].course === courseName) {
+                holes = matchesCache[editingMatchId].holes;
+            } else {
+                holes = courseData && courseData.holes ? courseData.holes : Array.from({length: 18}, (_, i) => ({
+                    number: i + 1, par: 4, yardage: 0, name: "", tip: "BoysTrip Caddies are scouting this hole. Tip pending!"
+                }));
+            }
 
             const payload = {
                 course: courseName,
@@ -590,16 +718,23 @@
                 matchUp: document.getElementById('m-matchup').value,
                 teamA: document.getElementById('m-teamA').value,
                 teamB: document.getElementById('m-teamB').value,
-                video: courseData ? (courseData.video || "") : "", // Pull video if from DB
+                video: courseData && !editingMatchId ? (courseData.video || "") : document.getElementById('m-video').value, // Allow custom video override on edit
                 holes: holes,
-                pendingData: isCustom, // Flag for the admin dashboard
-                createdAt: new Date().toISOString()
+                pendingData: isCustom, 
+                updatedAt: new Date().toISOString()
             };
 
-            await addDoc(collection(db, 'trips', activeTripId, 'matches'), payload);
+            if (editingMatchId) {
+                await setDoc(doc(db, 'trips', activeTripId, 'matches', editingMatchId), payload, { merge: true });
+            } else {
+                payload.createdAt = new Date().toISOString();
+                await addDoc(collection(db, 'trips', activeTripId, 'matches'), payload);
+            }
             
             ['m-date', 'm-time', 'm-matchup', 'm-teamA', 'm-teamB', 'm-video', 'm-course-custom'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('course-lookup-status').innerText = "";
+            editingMatchId = null;
+            
             closeModal('match-modal');
             btn.innerText = "Save Match to Trip"; btn.disabled = false;
             fetchDashboardData();
