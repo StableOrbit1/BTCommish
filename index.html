@@ -435,7 +435,19 @@
                     matchesCache[doc.id] = data;
                     matches.push(data);
                 });
-                matches.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                
+                // Sort matches by Date, then by Tee Time
+                matches.sort((a,b) => {
+                    const dateA = new Date(a.date).getTime() || 0;
+                    const dateB = new Date(b.date).getTime() || 0;
+                    if (dateA !== dateB) return dateA - dateB;
+                    
+                    const parseTime = (t) => {
+                        const parsed = new Date(`1970/01/01 ${t}`).getTime();
+                        return isNaN(parsed) ? 0 : parsed;
+                    };
+                    return parseTime(a.time) - parseTime(b.time);
+                });
                 
                 matches.forEach(data => {
                     const statusTag = data.pendingData ? `<span class="text-[9px] text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-bold uppercase">Pending Yardages</span>` : `<span class="text-[9px] text-emerald-500 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold uppercase">Ready</span>`;
@@ -562,22 +574,6 @@
                                       <option value="CUSTOM_ADD" class="font-bold text-emerald-600">+ Add Custom Course...</option>`;
             }
         }
-
-        window.openMatchModal = () => {
-            document.getElementById('course-lookup-status').innerText = "";
-            document.getElementById('m-course-custom').classList.add('hidden');
-            document.getElementById('m-course-custom').value = '';
-            
-            fetchMasterCourses(); // load the dropdown
-            openModal('match-modal');
-        };
-
-        window.openCrewModal = () => {
-            if (activeTripData && activeTripData.players) {
-                document.getElementById('edit-players-input').value = activeTripData.players.join(', ');
-            }
-            openModal('crew-modal');
-        };
 
         document.getElementById('btn-update-crew').addEventListener('click', async () => {
             const btn = document.getElementById('btn-update-crew');
