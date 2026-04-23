@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -16,33 +17,149 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        bt: { 900: '#064e3b', 800: '#065f46', 500: '#10b981' }
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #f5f5f4; font-family: 'Inter', sans-serif; }
+        body { background-color: #f5f5f4; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .serif { font-family: 'Playfair Display', serif; }
-        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .slide-up { animation: slideUp 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Custom Sliders */
+        input[type=range] { -webkit-appearance: none; background: transparent; height: 6px; border-radius: 4px; outline: none; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #10b981; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        input[type=range]::-moz-range-thumb { height: 24px; width: 24px; border-radius: 50%; background: #10b981; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); border: none; }
+        
+        .choice-btn { transition: all 0.2s; }
+        .choice-btn.selected { background-color: #064e3b; color: white; border-color: #064e3b; box-shadow: 0 4px 12px rgba(6, 78, 59, 0.2); transform: scale(1.02); }
     </style>
 </head>
 <body class="text-slate-900 antialiased min-h-screen flex flex-col items-center py-10 px-4">
 
     <!-- Loading State -->
     <div id="loading-state" class="text-center fade-in mt-32">
-        <h2 class="serif text-3xl text-emerald-600 animate-pulse italic mb-2">Connecting to Headquarters...</h2>
+        <h2 class="serif text-3xl text-bt-500 animate-pulse italic mb-2">Connecting to Headquarters...</h2>
         <p class="text-stone-500 text-xs uppercase tracking-widest font-bold">Authenticating Commissioner</p>
     </div>
 
-    <!-- The Builder Form (Step 1) -->
+    <!-- STATE 1: GATEWAY -->
+    <div id="gateway-state" class="hidden w-full max-w-4xl fade-in mt-10">
+        <div class="text-center mb-12">
+            <h1 class="serif text-5xl text-stone-900 italic mb-2 font-bold">Commissioner Portal</h1>
+            <p class="text-stone-400 tracking-[0.3em] uppercase text-[10px] font-black">Global Event Management</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Discover Path -->
+            <div onclick="startSurvey()" class="group cursor-pointer bg-white rounded-3xl p-8 border border-stone-200 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 relative overflow-hidden h-80 flex flex-col justify-end">
+                <div class="absolute inset-0 bg-stone-950 z-0"></div>
+                <!-- Mini Globe Container -->
+                <div id="mini-globe-container" class="absolute -top-10 -right-10 w-96 h-96 z-0 opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                
+                <div class="relative z-10">
+                    <div class="inline-block p-4 bg-emerald-500/20 rounded-2xl mb-4 text-emerald-400 border border-emerald-500/30">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h2 class="serif text-3xl text-white font-bold mb-2">Discover & Build</h2>
+                    <p class="text-stone-300 text-sm">Use the BoysTrip Concierge to plan your next elite golf destination based on your crew's exact requirements.</p>
+                </div>
+            </div>
+
+            <!-- Add / Manage Path -->
+            <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-xl flex flex-col h-80 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-stone-50/50 pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col h-full">
+                    
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="inline-block p-3 bg-stone-100 rounded-xl text-stone-500 border border-stone-200 shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        </div>
+                        <div>
+                            <h2 class="serif text-2xl text-stone-900 font-bold leading-none mb-1">Add or Manage</h2>
+                            <p class="text-stone-500 text-[11px] leading-tight">Skip the wizard. Manually build a new trip or manage an existing one.</p>
+                        </div>
+                    </div>
+
+                    <button onclick="startManualBuild()" class="w-full py-3 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors mb-auto shadow-sm">
+                        + Create New Tour
+                    </button>
+                    
+                    <div class="mt-4 pt-4 border-t border-stone-200">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">Edit Existing Tour</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="input-edit-code" placeholder="Tour Code" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 font-black text-stone-900 uppercase focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-center tracking-widest text-sm">
+                            <button id="btn-edit-trip" class="bg-stone-900 hover:bg-stone-800 text-white px-5 py-2 rounded-xl font-bold uppercase tracking-widest transition-all active:scale-95 text-xs shadow-md">Load</button>
+                        </div>
+                        <p id="edit-error-message" class="text-rose-500 text-[10px] text-center font-bold mt-2 hidden"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE 2: SURVEY WIZARD -->
+    <div id="survey-state" class="hidden w-full max-w-2xl fade-in mt-10">
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">BoysTrip Concierge</span>
+                <span id="survey-step-counter" class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Step 1 of 3</span>
+            </div>
+            <div class="h-2 bg-stone-200 rounded-full overflow-hidden">
+                <div id="survey-progress-bar" class="h-full bg-emerald-500 w-1/3 transition-all duration-500"></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-stone-200">
+            <div class="bg-stone-950 p-6 border-b border-stone-800 text-center">
+                <h2 id="survey-theme-title" class="serif text-3xl text-white italic">The Logistics</h2>
+            </div>
+            
+            <div id="survey-questions-container" class="p-8 space-y-8 slide-up">
+                <!-- Dynamically Injected Questions -->
+            </div>
+            
+            <div class="p-6 bg-stone-50 border-t border-stone-200 flex justify-between">
+                <button id="btn-survey-prev" onclick="prevSurveyStep()" class="px-6 py-3 text-stone-500 hover:text-stone-900 font-bold uppercase tracking-widest text-xs transition invisible">Back</button>
+                <button id="btn-survey-next" onclick="nextSurveyStep()" class="px-8 py-3 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl font-bold uppercase tracking-widest text-xs transition shadow-lg">Next Step</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE 3: RECOMMENDATIONS -->
+    <div id="recommendations-state" class="hidden w-full max-w-5xl fade-in mt-6">
+        <div class="text-center mb-8">
+            <p class="text-emerald-600 tracking-[0.3em] uppercase text-[10px] font-black mb-2">Analysis Complete</p>
+            <h1 class="serif text-4xl text-stone-900 italic font-bold">Your Custom Blueprints</h1>
+        </div>
+
+        <!-- 3D Globe Container -->
+        <div id="main-globe-container" class="w-full h-64 md:h-96 rounded-3xl overflow-hidden mb-8 bg-stone-950 border border-stone-800 shadow-2xl relative cursor-move">
+            <div class="absolute inset-0 z-10 pointer-events-none shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]"></div>
+            <!-- ThreeJS Injected Here -->
+        </div>
+
+        <div id="recommendation-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Dynamically Injected Cards -->
+        </div>
+    </div>
+
+    <!-- STATE 4: THE BUILDER FORM (Modified) -->
     <div id="builder-state" class="hidden w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden fade-in border border-stone-200 mt-10">
-        <div class="bg-stone-950 p-8 text-center border-b-4 border-emerald-600">
-            <h1 class="serif text-4xl text-white italic mb-2">BoysTrip Planner</h1>
-            <p class="text-stone-400 tracking-[0.2em] uppercase text-[10px] font-bold">Commissioner Portal</p>
+        <div class="bg-stone-950 p-8 text-center border-b-4 border-emerald-600 relative">
+            <button onclick="goBackFromBuilder()" class="absolute left-6 top-6 text-stone-400 hover:text-white text-[10px] font-bold uppercase tracking-widest border border-stone-700 px-3 py-1 rounded transition-colors">← Back</button>
+            <h1 class="serif text-4xl text-white italic mb-2 mt-4">Tour Initialization</h1>
+            <p class="text-stone-400 tracking-[0.2em] uppercase text-[10px] font-bold">Lock in the final details</p>
         </div>
         
         <div class="p-8 space-y-6">
@@ -75,31 +192,19 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">The Crew (Comma Separated)</label>
                 <textarea id="input-players" rows="3" placeholder="Greg, Parker, Scott, Craig" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-bold text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
-                <p class="text-[10px] text-stone-400 mt-2">These names will be used for the ledger and time machine features.</p>
             </div>
+
+            <!-- Hidden field to hold suggested courses from the recommendation engine -->
+            <input type="hidden" id="input-suggested-courses" value="">
 
             <button id="btn-build" class="w-full py-5 mt-4 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl font-black uppercase tracking-widest transition-all shadow-xl active:scale-95">
-                Initialize Trip
+                Generate Cloud Database
             </button>
             <p id="error-message" class="text-rose-500 text-xs text-center font-bold hidden"></p>
-
-            <div class="relative flex items-center py-2">
-                <div class="flex-grow border-t border-stone-200"></div>
-                <span class="flex-shrink-0 mx-4 text-stone-400 text-[10px] uppercase tracking-widest font-bold">Or Edit Existing</span>
-                <div class="flex-grow border-t border-stone-200"></div>
-            </div>
-
-            <div class="flex gap-2">
-                <input type="text" id="input-edit-code" placeholder="Enter Trip Code" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-black text-stone-900 uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center tracking-widest">
-                <button id="btn-edit-trip" class="bg-stone-900 hover:bg-stone-800 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest transition-all active:scale-95">
-                    Load
-                </button>
-            </div>
-            <p id="edit-error-message" class="text-rose-500 text-xs text-center font-bold hidden"></p>
         </div>
     </div>
 
-    <!-- Dashboard State (Step 2) -->
+    <!-- STATE 5: THE DASHBOARD (Unchanged structurally, just formatting fixes) -->
     <div id="dashboard-state" class="hidden w-full max-w-5xl fade-in">
         
         <div class="bg-stone-950 rounded-3xl shadow-2xl p-8 mb-8 text-center border border-stone-800 flex flex-col md:flex-row items-center justify-between">
@@ -108,7 +213,7 @@
                 <p class="text-emerald-500 text-[10px] font-bold uppercase tracking-[0.3em]">Master Database Provisioned</p>
             </div>
             <div class="bg-white/10 rounded-2xl p-4 px-8 border border-white/20 text-center">
-                <p class="text-stone-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Official Trip Code</p>
+                <p class="text-stone-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Official Tour Code</p>
                 <h3 id="display-trip-id" class="serif text-5xl text-white font-black tracking-widest"></h3>
             </div>
         </div>
@@ -120,9 +225,7 @@
                     <h3 class="serif text-2xl text-stone-900 font-bold">The Crew</h3>
                     <button onclick="openCrewModal()" class="bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-indigo-100 transition">Edit Roster</button>
                 </div>
-                <div id="crew-list" class="flex flex-wrap gap-2">
-                    <!-- Loaded via JS -->
-                </div>
+                <div id="crew-list" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Itinerary Section -->
@@ -131,9 +234,7 @@
                     <h3 class="serif text-2xl text-stone-900 font-bold">Itinerary</h3>
                     <button onclick="openAddItineraryModal()" class="bg-stone-900 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-stone-800 transition">Add Day +</button>
                 </div>
-                <div id="itinerary-list" class="space-y-3">
-                    <p class="text-stone-400 text-sm italic">No itinerary days added yet.</p>
-                </div>
+                <div id="itinerary-list" class="space-y-3"></div>
             </div>
 
             <!-- Matches Section -->
@@ -142,21 +243,18 @@
                     <h3 class="serif text-2xl text-stone-900 font-bold">Golf Matches</h3>
                     <button onclick="openAddMatchModal()" class="bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-700 transition">Add Course +</button>
                 </div>
-                <div id="matches-list" class="space-y-3">
-                    <p class="text-stone-400 text-sm italic">No golf matches added yet.</p>
-                </div>
+                <div id="matches-list" class="space-y-3"></div>
             </div>
         </div>
     </div>
 
+    <!-- MODALS (Hidden by default) -->
     <!-- MODAL: Confirm Delete -->
     <div id="delete-modal" class="hidden fixed inset-0 z-[400] bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden flex flex-col text-center">
             <div class="p-6 pt-10">
                 <div class="inline-block p-4 rounded-full bg-rose-100 text-rose-600 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </div>
                 <h3 class="serif text-2xl font-bold text-stone-900 mb-2">Are you sure?</h3>
                 <p class="text-stone-500 text-sm mb-2">This action cannot be undone. This will permanently remove this item from the tour.</p>
@@ -188,7 +286,6 @@
                 </div>
                 <hr class="border-stone-100">
                 <h4 class="text-xs font-bold uppercase tracking-widest text-emerald-600">City Intel</h4>
-                
                 <div>
                     <label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">City Name</label>
                     <div class="flex gap-2">
@@ -197,7 +294,6 @@
                     </div>
                     <p id="city-lookup-status" class="text-[10px] mt-1 h-3"></p>
                 </div>
-
                 <div><label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">City Vibe (Description)</label><textarea id="itn-desc" rows="3" placeholder="Click Search to auto-fill or type your own!" class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"></textarea></div>
                 <div><label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Hotel Name</label><input type="text" id="itn-hotel" class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"></div>
             </div>
@@ -224,10 +320,7 @@
                     <select id="m-course-select" class="w-full border rounded px-3 py-3 text-sm focus:ring-2 focus:ring-emerald-500 font-bold text-stone-800 bg-white shadow-sm mb-2 outline-none">
                         <option value="">Loading Master Database...</option>
                     </select>
-                    
-                    <!-- Hidden Custom Input -->
                     <input type="text" id="m-course-custom" placeholder="Type new course name here..." class="hidden w-full border rounded px-3 py-3 text-sm focus:ring-2 focus:ring-emerald-500 font-bold bg-white mt-2 shadow-inner">
-                    
                     <p id="course-lookup-status" class="text-[10px] mt-2 h-3 font-medium text-stone-500"></p>
                 </div>
 
@@ -242,9 +335,7 @@
                     <div><label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Team A Name</label><input type="text" id="m-teamA" class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"></div>
                     <div><label class="block text-[10px] font-bold uppercase text-stone-500 mb-1">Team B Name</label><input type="text" id="m-teamB" class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"></div>
                 </div>
-                
                 <input type="hidden" id="m-video" value="">
-
             </div>
             <div class="p-6 border-t border-stone-100 bg-stone-50">
                 <button id="btn-save-match" class="w-full py-4 bg-emerald-800 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-emerald-700 transition shadow-lg">Save Match to Trip</button>
@@ -276,7 +367,7 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, addDoc, collection, getDocs, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Configuration
+        // --- 1. FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyA22FAji--oTGjr9gveuhHn_XH22ZZwGAI",
             authDomain: "boystrip-000000001.firebaseapp.com",
@@ -290,36 +381,375 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- 2. GLOBAL STATE ---
         let activeTripId = null;
         let activeTripData = null;
         let masterCoursesCache = {}; 
-        
         let editingItineraryId = null;
         let editingMatchId = null;
-        let itemToDelete = null; // Tracks what item the user is trying to delete
-
+        let itemToDelete = null; 
         let itineraryCache = {};
         let matchesCache = {};
+        
+        // Survey State
+        let currentSurveyStep = 0;
+        let surveyData = {};
+        let builderSource = 'gateway'; // Tracks how the user arrived at the builder
 
-        // Boot Sequence
+        // --- 3. SURVEY WIZARD LOGIC ---
+        const surveyThemes = [
+            {
+                title: "The Logistics",
+                questions: [
+                    { id: "days", type: "slider", label: "How many days are you traveling?", min: 3, max: 14, val: 5, unit: "Days" },
+                    { id: "crew", type: "slider", label: "How many players in the crew?", min: 2, max: 24, val: 8, unit: "Players" },
+                    { id: "season", type: "choice", label: "Preferred Season?", options: ["Spring", "Summer", "Fall", "Winter"] }
+                ]
+            },
+            {
+                title: "The Golf Experience",
+                questions: [
+                    { id: "intensity", type: "choice", label: "Golf Intensity?", options: ["1 Round/Day", "36 Holes/Day", "Mixed"] },
+                    { id: "style", type: "choice", label: "Course Style?", options: ["Links/Coastal", "Parkland/Inland", "Desert", "Mix"] },
+                    { id: "handicap", type: "slider", label: "Average Group Handicap?", min: 0, max: 36, val: 12, unit: "HDCP" }
+                ]
+            },
+            {
+                title: "The Vibe & Budget",
+                questions: [
+                    { id: "accommodation", type: "choice", label: "Lodging Style?", options: ["On-Course Resort", "Private House", "City Hotel"] },
+                    { id: "nightlife", type: "choice", label: "Evening Vibe?", options: ["Quiet Pubs", "Lively City", "Fine Dining"] },
+                    { id: "budget", type: "choice", label: "Budget Level (per player)?", options: ["Value ($)", "Premium ($$)", "Blank Check ($$$)"] },
+                    { id: "nongolf", type: "text", label: "Must-have non-golf activities?", placeholder: "e.g. Whiskey tasting, fishing..." }
+                ]
+            }
+        ];
+
+        window.startSurvey = () => {
+            document.getElementById('gateway-state').classList.add('hidden');
+            document.getElementById('survey-state').classList.remove('hidden');
+            currentSurveyStep = 0;
+            renderSurveyStep();
+        };
+
+        function renderSurveyStep() {
+            const theme = surveyThemes[currentSurveyStep];
+            document.getElementById('survey-theme-title').innerText = theme.title;
+            document.getElementById('survey-step-counter').innerText = `Step ${currentSurveyStep + 1} of ${surveyThemes.length}`;
+            document.getElementById('survey-progress-bar').style.width = `${((currentSurveyStep + 1) / surveyThemes.length) * 100}%`;
+            
+            const container = document.getElementById('survey-questions-container');
+            container.innerHTML = '';
+            
+            // Reset animation
+            container.classList.remove('slide-up');
+            void container.offsetWidth; 
+            container.classList.add('slide-up');
+
+            theme.questions.forEach(q => {
+                let html = `<div class="mb-6"><label class="block text-sm font-bold text-stone-800 mb-3">${q.label}</label>`;
+                
+                if (q.type === 'slider') {
+                    const currentVal = surveyData[q.id] || q.val;
+                    html += `
+                        <div class="flex items-center gap-4">
+                            <input type="range" id="q-${q.id}" min="${q.min}" max="${q.max}" value="${currentVal}" 
+                                oninput="document.getElementById('val-${q.id}').innerText = this.value + ' ${q.unit}'"
+                                onchange="surveyData['${q.id}'] = this.value" class="w-full">
+                            <span id="val-${q.id}" class="w-24 text-right font-black text-emerald-600 text-sm bg-emerald-50 px-3 py-1 rounded-lg">${currentVal} ${q.unit}</span>
+                        </div>`;
+                } else if (q.type === 'choice') {
+                    html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-3">`;
+                    q.options.forEach(opt => {
+                        const isSel = surveyData[q.id] === opt ? 'selected' : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100';
+                        html += `<button onclick="selectSurveyChoice('${q.id}', '${opt}', this)" class="choice-btn w-full py-3 px-2 border rounded-xl text-xs font-bold uppercase tracking-wide ${isSel}">${opt}</button>`;
+                    });
+                    html += `</div>`;
+                } else if (q.type === 'text') {
+                    html += `<input type="text" id="q-${q.id}" placeholder="${q.placeholder}" value="${surveyData[q.id]||''}" onchange="surveyData['${q.id}'] = this.value" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 font-medium text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">`;
+                }
+                
+                html += `</div>`;
+                container.innerHTML += html;
+            });
+
+            document.getElementById('btn-survey-prev').classList.toggle('invisible', currentSurveyStep === 0);
+            document.getElementById('btn-survey-next').innerText = currentSurveyStep === surveyThemes.length - 1 ? 'Analyze & Build' : 'Next Step';
+        }
+
+        window.selectSurveyChoice = (qId, val, btnEl) => {
+            surveyData[qId] = val;
+            const siblings = btnEl.parentElement.querySelectorAll('button');
+            siblings.forEach(b => {
+                b.classList.remove('selected', 'bg-bt-900', 'text-white', 'border-bt-900');
+                b.classList.add('bg-stone-50', 'border-stone-200', 'text-stone-600');
+            });
+            btnEl.classList.remove('bg-stone-50', 'border-stone-200', 'text-stone-600');
+            btnEl.classList.add('selected', 'bg-bt-900', 'text-white', 'border-bt-900');
+        };
+
+        window.prevSurveyStep = () => {
+            if (currentSurveyStep > 0) { currentSurveyStep--; renderSurveyStep(); }
+        };
+
+        window.nextSurveyStep = () => {
+            if (currentSurveyStep < surveyThemes.length - 1) {
+                currentSurveyStep++;
+                renderSurveyStep();
+            } else {
+                generateRecommendations();
+            }
+        };
+
+        // --- 4. RECOMMENDATION ENGINE & THREE.JS ---
+        let mainGlobeRenderer, mainGlobeScene, mainGlobeCamera, mainGlobe;
+        let miniGlobeRenderer, miniGlobeScene, miniGlobeCamera, miniGlobe;
+        
+        function initGlobe(containerId, isMini = false) {
+            const container = document.getElementById(containerId);
+            if (!container) return null;
+            container.innerHTML = ''; // clear previous
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // Dark Elite Wireframe Sphere
+            const geometry = new THREE.SphereGeometry(isMini ? 4 : 5, 32, 32);
+            
+            // Create a custom material that looks like a dark digital mesh
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x064e3b, // BoysTrip emerald dark
+                emissive: 0x000000,
+                specular: 0x10b981,
+                shininess: 10,
+                wireframe: true,
+                transparent: true,
+                opacity: isMini ? 0.3 : 0.6
+            });
+            
+            const globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+
+            // Inner solid dark sphere to hide back lines
+            const solidMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a });
+            const solidGlobe = new THREE.Mesh(new THREE.SphereGeometry(isMini ? 3.9 : 4.95, 32, 32), solidMat);
+            scene.add(solidGlobe);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0x10b981, 1);
+            dirLight.position.set(5, 3, 5);
+            scene.add(dirLight);
+
+            camera.position.z = isMini ? 12 : 15;
+
+            // Simple render loop
+            function animate() {
+                requestAnimationFrame(animate);
+                globe.rotation.y += 0.002;
+                globe.rotation.x += 0.0005;
+                solidGlobe.rotation.y += 0.002;
+                solidGlobe.rotation.x += 0.0005;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Handle resize
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            return { scene, globe, solidGlobe };
+        }
+
+        // Convert Lat/Lon to 3D space on the sphere
+        function addMarkerToGlobe(scene, lat, lon, color = 0x10b981) {
+            const radius = 5;
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+
+            const markerGeo = new THREE.SphereGeometry(0.15, 16, 16);
+            const markerMat = new THREE.MeshBasicMaterial({ color: color });
+            const marker = new THREE.Mesh(markerGeo, markerMat);
+
+            marker.position.x = -(radius * Math.sin(phi) * Math.cos(theta));
+            marker.position.z = (radius * Math.sin(phi) * Math.sin(theta));
+            marker.position.y = (radius * Math.cos(phi));
+
+            // Add a glow/ring
+            const ringGeo = new THREE.RingGeometry(0.2, 0.25, 32);
+            const ringMat = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent: true, opacity: 0.5 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.position.copy(marker.position);
+            ring.lookAt(new THREE.Vector3(0,0,0));
+
+            scene.add(marker);
+            scene.add(ring);
+            
+            // Pulse animation for ring
+            let scale = 1;
+            let grow = true;
+            setInterval(() => {
+                if(grow) scale += 0.01; else scale -= 0.01;
+                if(scale > 1.5) grow = false;
+                if(scale < 1) grow = true;
+                ring.scale.set(scale, scale, scale);
+            }, 30);
+        }
+
+        function generateRecommendations() {
+            document.getElementById('survey-state').classList.add('hidden');
+            document.getElementById('recommendations-state').classList.remove('hidden');
+
+            // Init the main globe
+            const globeData = initGlobe('main-globe-container');
+            
+            // Mock Recommendation Logic based on survey
+            // In a real app, this would deeply query a database based on `surveyData`
+            let recs = [];
+            
+            if (surveyData.style === 'Desert' || surveyData.budget === 'Blank Check ($$$)') {
+                recs.push({
+                    title: "Desert Elite Tour",
+                    desc: "Scottsdale / Vegas Premium Run",
+                    lat: 33.49, lon: -111.92,
+                    courses: "TPC Scottsdale, Shadow Creek, Wolf Creek",
+                    color: 0xf59e0b // amber
+                });
+            }
+            
+            if (surveyData.style === 'Links/Coastal' || surveyData.intensity === '36 Holes/Day') {
+                recs.push({
+                    title: "The Birthplace Run",
+                    desc: "Scotland & Ireland Pure Links",
+                    lat: 56.33, lon: -2.79, // St Andrews
+                    courses: "St Andrews, Muirfield, Portrush",
+                    color: 0x3b82f6 // blue
+                });
+                recs.push({
+                    title: "Bandon Pilgrimage",
+                    desc: "Oregon Coast 36-Hole Marathons",
+                    lat: 43.11, lon: -124.39,
+                    courses: "Pacific Dunes, Bandon Trails",
+                    color: 0x10b981 // emerald
+                });
+            }
+
+            // Fallbacks if logic didn't hit
+            if (recs.length < 3) {
+                recs.push({
+                    title: "Pinehurst Showdown",
+                    desc: "Carolina Sandhills Classic",
+                    lat: 35.19, lon: -79.46,
+                    courses: "Pinehurst No. 2, Pine Needles",
+                    color: 0x8b5cf6 // indigo
+                });
+                if (recs.length < 3) {
+                    recs.push({
+                        title: "The Monterey Classic",
+                        desc: "Pebble Beach & Peninsula Premium",
+                        lat: 36.56, lon: -121.95,
+                        courses: "Pebble Beach, Spyglass Hill",
+                        color: 0xec4899 // pink
+                    });
+                }
+            }
+
+            // Slice to 3 options
+            recs = recs.slice(0, 3);
+
+            const cardsContainer = document.getElementById('recommendation-cards');
+            cardsContainer.innerHTML = '';
+
+            recs.forEach((rec, idx) => {
+                // Plot on globe
+                if (globeData) addMarkerToGlobe(globeData.globe, rec.lat, rec.lon, rec.color);
+
+                // Build Card
+                cardsContainer.innerHTML += `
+                    <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-xl flex flex-col h-full hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group" onclick="selectRecommendation('${rec.title}', '${rec.desc}', '${rec.courses}')">
+                        <div class="absolute top-0 left-0 w-full h-1" style="background-color: #${rec.color.toString(16)}"></div>
+                        <div class="mb-4">
+                            <span class="text-[9px] font-black uppercase tracking-widest text-stone-400 bg-stone-100 px-2 py-1 rounded-md">Option ${idx+1}</span>
+                        </div>
+                        <h3 class="serif text-2xl font-bold text-stone-900 mb-1">${rec.title}</h3>
+                        <p class="text-xs text-stone-500 font-bold uppercase tracking-widest mb-4">${rec.desc}</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-stone-100">
+                            <p class="text-[10px] text-stone-400 uppercase font-bold tracking-widest mb-1">Suggested Routing</p>
+                            <p class="text-sm font-medium text-stone-700">${rec.courses}</p>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button class="w-full py-3 bg-stone-950 text-white rounded-xl font-bold uppercase tracking-widest text-xs group-hover:bg-emerald-600 transition-colors">Select Blueprint</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.startManualBuild = () => {
+            builderSource = 'gateway';
+            document.getElementById('gateway-state').classList.add('hidden');
+            
+            // Clear fields for a blank slate
+            document.getElementById('input-name').value = '';
+            document.getElementById('input-desc').value = '';
+            document.getElementById('input-suggested-courses').value = '';
+            
+            document.getElementById('builder-state').classList.remove('hidden');
+        };
+
+        window.goBackFromBuilder = () => {
+            document.getElementById('builder-state').classList.add('hidden');
+            if (builderSource === 'recommendations') {
+                document.getElementById('recommendations-state').classList.remove('hidden');
+            } else {
+                document.getElementById('gateway-state').classList.remove('hidden');
+            }
+        };
+
+        window.selectRecommendation = (title, desc, courses) => {
+            builderSource = 'recommendations';
+            
+            // Fill the builder form with the selected blueprint
+            document.getElementById('input-name').value = title;
+            document.getElementById('input-desc').value = desc;
+            document.getElementById('input-suggested-courses').value = courses;
+            
+            document.getElementById('recommendations-state').classList.add('hidden');
+            document.getElementById('builder-state').classList.remove('hidden');
+        };
+
+
+        // --- 5. FIREBASE INTEGRATION (BOOT & BUILD) ---
         async function boot() {
             try {
                 await signInAnonymously(auth);
                 document.getElementById('loading-state').classList.add('hidden');
-                document.getElementById('builder-state').classList.remove('hidden');
+                
+                // Show Gateway & init mini globe
+                document.getElementById('gateway-state').classList.remove('hidden');
+                setTimeout(() => initGlobe('mini-globe-container', true), 100);
+
             } catch (err) {
                 document.getElementById('loading-state').innerHTML = `<p class="text-rose-500 font-bold">Authentication Failed. Check Firebase Rules.</p>`;
             }
         }
 
-        // Generate ID
         function generateTripId(name) {
             const prefix = name.replace(/[^a-zA-Z]/g, '').substring(0, 4).toUpperCase();
             const random = Math.floor(10 + Math.random() * 90); 
             return prefix.length >= 2 ? `${prefix}${random}` : Math.random().toString(36).substring(2, 7).toUpperCase();
         }
 
-        // 1. Build Trip
         document.getElementById('btn-build').addEventListener('click', async () => {
             const btn = document.getElementById('btn-build');
             const errorEl = document.getElementById('error-message');
@@ -330,6 +760,7 @@
             const end = document.getElementById('input-end').value;
             const email = document.getElementById('input-email').value.trim();
             const playersRaw = document.getElementById('input-players').value;
+            const suggestedCourses = document.getElementById('input-suggested-courses').value;
 
             if (!name || !playersRaw) {
                 errorEl.innerText = "Trip Title and Players are required.";
@@ -346,7 +777,7 @@
 
             const tripPayload = {
                 tripName: name, tripDescription: desc, commissionerEmail: email, startDate: start, endDate: end,
-                players: playersArray, createdAt: new Date().toISOString()
+                players: playersArray, createdAt: new Date().toISOString(), blueprintCourses: suggestedCourses
             };
 
             try {
@@ -361,7 +792,7 @@
                 fetchDashboardData();
 
             } catch (error) {
-                btn.innerText = "Initialize Trip";
+                btn.innerText = "Generate Cloud Database";
                 btn.disabled = false;
                 errorEl.innerText = `Database Error: ${error.message}`;
                 errorEl.classList.remove('hidden');
@@ -375,26 +806,26 @@
             const code = document.getElementById('input-edit-code').value.trim().toUpperCase();
 
             if (!code) {
-                errorEl.innerText = "Please enter a Trip Code.";
+                errorEl.innerText = "Please enter a Tour Code.";
                 errorEl.classList.remove('hidden');
                 return;
             }
 
-            btn.innerText = "...";
+            btn.innerText = "Loading...";
             btn.disabled = true;
             errorEl.classList.add('hidden');
 
             try {
                 const tripDoc = await getDoc(doc(db, 'trips', code));
                 if (!tripDoc.exists()) {
-                    throw new Error("Trip Code not found.");
+                    throw new Error("Tour Code not found.");
                 }
 
                 activeTripId = code;
                 const tripData = tripDoc.data();
                 activeTripData = tripData;
                 
-                document.getElementById('builder-state').classList.add('hidden');
+                document.getElementById('gateway-state').classList.add('hidden');
                 document.getElementById('dash-trip-name').innerText = tripData.tripName || "Trip Dashboard";
                 document.getElementById('display-trip-id').innerText = activeTripId;
                 document.getElementById('dashboard-state').classList.remove('hidden');
@@ -409,11 +840,10 @@
             }
         });
 
-        // 2. Fetch & Render Dashboard Lists
+        // --- 6. DASHBOARD & CRUD LOGIC (Unchanged Data layer) ---
         async function fetchDashboardData() {
             if (!activeTripId) return;
 
-            // Render Crew
             const crewList = document.getElementById('crew-list');
             if (activeTripData && activeTripData.players) {
                 crewList.innerHTML = activeTripData.players.map(p => 
@@ -430,16 +860,12 @@
                 itnList.innerHTML = `<p class="text-stone-400 text-sm italic">No itinerary days added yet.</p>`;
             } else {
                 itnList.innerHTML = '';
-                // Sort by date to ensure they are listed in order
                 let days = [];
                 itnSnap.forEach(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    itineraryCache[doc.id] = data;
-                    days.push(data);
+                    const data = doc.data(); data.id = doc.id;
+                    itineraryCache[doc.id] = data; days.push(data);
                 });
                 days.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-                
                 days.forEach(data => {
                     itnList.innerHTML += `
                         <div class="bg-stone-50 border rounded-lg p-3 text-sm flex flex-col sm:flex-row sm:justify-between sm:items-center">
@@ -461,28 +887,19 @@
                 mtchList.innerHTML = '';
                 let matches = [];
                 mtchSnap.forEach(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    matchesCache[doc.id] = data;
-                    matches.push(data);
+                    const data = doc.data(); data.id = doc.id;
+                    matchesCache[doc.id] = data; matches.push(data);
                 });
-                
-                // Sort matches by Date, then by Tee Time
                 matches.sort((a,b) => {
                     const dateA = new Date(a.date).getTime() || 0;
                     const dateB = new Date(b.date).getTime() || 0;
                     if (dateA !== dateB) return dateA - dateB;
-                    
-                    const parseTime = (t) => {
-                        const parsed = new Date(`1970/01/01 ${t}`).getTime();
-                        return isNaN(parsed) ? 0 : parsed;
-                    };
+                    const parseTime = (t) => { const parsed = new Date(`1970/01/01 ${t}`).getTime(); return isNaN(parsed) ? 0 : parsed; };
                     return parseTime(a.time) - parseTime(b.time);
                 });
                 
                 matches.forEach(data => {
                     const statusTag = data.pendingData ? `<span class="text-[9px] text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-bold uppercase hidden sm:inline-block">Pending Yardages</span>` : `<span class="text-[9px] text-emerald-500 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-bold uppercase hidden sm:inline-block">Ready</span>`;
-                    
                     const displayTime = data.time ? data.time : "TBD";
                     
                     mtchList.innerHTML += `
@@ -504,7 +921,6 @@
             }
         }
 
-        // 3. Modals & Smart Lookups
         window.openModal = (id) => { document.getElementById(id).classList.remove('hidden'); };
         window.closeModal = (id) => { document.getElementById(id).classList.add('hidden'); };
 
@@ -520,7 +936,6 @@
             editingItineraryId = id;
             const data = itineraryCache[id];
             if(!data) return;
-
             document.getElementById('itn-day').value = data.day || '';
             document.getElementById('itn-date').value = data.date || '';
             document.getElementById('itn-quote').value = data.quote || '';
@@ -529,7 +944,6 @@
             document.getElementById('itn-city').value = data.intel?.city || '';
             document.getElementById('itn-hotel').value = data.intel?.hotel || '';
             document.getElementById('itn-desc').value = data.intel?.description || '';
-            
             document.getElementById('city-lookup-status').innerText = "";
             document.getElementById('btn-save-itinerary').innerText = "Update Day";
             openModal('itinerary-modal');
@@ -548,7 +962,6 @@
             editingMatchId = id;
             const data = matchesCache[id];
             if(!data) return;
-
             document.getElementById('m-date').value = data.date || '';
             document.getElementById('m-time').value = data.time || '';
             document.getElementById('m-matchup').value = data.matchUp || '';
@@ -556,13 +969,10 @@
             document.getElementById('m-teamB').value = data.teamB || '';
             document.getElementById('m-video').value = data.video || '';
             document.getElementById('course-lookup-status').innerText = "";
-
             document.getElementById('btn-save-match').innerText = "Update Match";
-            
             fetchMasterCourses().then(() => {
                 const select = document.getElementById('m-course-select');
                 const options = Array.from(select.options).map(o => o.value);
-                
                 if (options.includes(data.course)) {
                     select.value = data.course;
                     document.getElementById('m-course-custom').classList.add('hidden');
@@ -600,59 +1010,41 @@
                 } else if (itemToDelete.type === 'match') {
                     await deleteDoc(doc(db, 'trips', activeTripId, 'matches', itemToDelete.id));
                 }
-                
                 closeModal('delete-modal');
                 fetchDashboardData();
             } catch (err) {
                 errorEl.innerText = "Failed to delete: " + err.message;
                 errorEl.classList.remove('hidden');
             }
-
             btn.innerText = "Delete"; btn.disabled = false;
             itemToDelete = null;
         });
 
-        // Fetch Master Courses for Dropdown
         async function fetchMasterCourses() {
             const selectEl = document.getElementById('m-course-select');
             selectEl.innerHTML = '<option value="">Loading master database...</option>';
-            
             try {
                 const snap = await getDocs(collection(db, 'master_courses'));
                 let courses = [];
-                masterCoursesCache = {}; // clear cache
-                
+                masterCoursesCache = {};
                 snap.forEach(doc => {
                     let data = doc.data();
-                    if(data.name) {
-                        courses.push(data);
-                        masterCoursesCache[data.name] = data; 
-                    }
+                    if(data.name) { courses.push(data); masterCoursesCache[data.name] = data; }
                 });
-
-                // Sort alphabetically
                 courses.sort((a, b) => a.name.localeCompare(b.name));
-                
                 selectEl.innerHTML = '<option value="" disabled selected>-- Select a Course --</option>';
-                courses.forEach(c => {
-                    selectEl.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-                });
+                courses.forEach(c => { selectEl.innerHTML += `<option value="${c.name}">${c.name}</option>`; });
                 selectEl.innerHTML += `<option value="CUSTOM_ADD" class="font-bold text-emerald-600">+ Add New Course...</option>`;
-
             } catch (error) {
-                console.error(error);
-                selectEl.innerHTML = `<option value="" disabled selected>Database connection failed</option>
-                                      <option value="CUSTOM_ADD" class="font-bold text-emerald-600">+ Add Custom Course...</option>`;
+                selectEl.innerHTML = `<option value="" disabled selected>Database connection failed</option><option value="CUSTOM_ADD" class="font-bold text-emerald-600">+ Add Custom Course...</option>`;
             }
         }
 
         document.getElementById('btn-update-crew').addEventListener('click', async () => {
             const btn = document.getElementById('btn-update-crew');
             btn.innerText = "Updating..."; btn.disabled = true;
-            
             const playersRaw = document.getElementById('edit-players-input').value;
             const playersArray = playersRaw.split(',').map(p => p.trim()).filter(p => p);
-            
             try {
                 await setDoc(doc(db, 'trips', activeTripId), { players: playersArray }, { merge: true });
                 activeTripData.players = playersArray;
@@ -664,15 +1056,12 @@
             btn.innerText = "Update Roster"; btn.disabled = false;
         });
 
-        // Handle Dropdown Change
         document.getElementById('m-course-select').addEventListener('change', (e) => {
             const val = e.target.value;
             const customInput = document.getElementById('m-course-custom');
             const statusEl = document.getElementById('course-lookup-status');
-
             if (val === 'CUSTOM_ADD') {
-                customInput.classList.remove('hidden');
-                customInput.focus();
+                customInput.classList.remove('hidden'); customInput.focus();
                 statusEl.innerText = "Custom course. BoysTrip caddies will add yardages ASAP!";
                 statusEl.className = "text-[10px] mt-2 h-3 font-bold text-amber-600";
             } else if (val) {
@@ -686,12 +1075,10 @@
             const rawCity = document.getElementById('itn-city').value;
             const cityKey = rawCity.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
             const statusEl = document.getElementById('city-lookup-status');
-            
             if(!cityKey) return;
             
             statusEl.innerText = "Searching global database...";
             statusEl.className = "text-[10px] mt-1 h-3 text-stone-500 font-bold";
-            
             try {
                 const docRef = doc(db, 'master_cities', cityKey);
                 const docSnap = await getDoc(docRef);
@@ -708,11 +1095,9 @@
             }
         };
 
-        // 4. Save Itinerary Day
         document.getElementById('btn-save-itinerary').addEventListener('click', async () => {
             const btn = document.getElementById('btn-save-itinerary');
             btn.innerText = "Saving..."; btn.disabled = true;
-
             const payload = {
                 day: document.getElementById('itn-day').value,
                 date: document.getElementById('itn-date').value,
@@ -738,21 +1123,17 @@
             ['itn-day', 'itn-date', 'itn-quote', 'itn-wake', 'itn-sleep', 'itn-city', 'itn-hotel', 'itn-desc'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('city-lookup-status').innerText = "";
             editingItineraryId = null;
-            
             closeModal('itinerary-modal');
             btn.innerText = "Save Day"; btn.disabled = false;
             fetchDashboardData();
         });
 
-        // 5. Save Match (Smart Saving)
         document.getElementById('btn-save-match').addEventListener('click', async () => {
             const btn = document.getElementById('btn-save-match');
             btn.innerText = "Saving Match Data..."; btn.disabled = true;
 
             const selectVal = document.getElementById('m-course-select').value;
-            let courseName = "";
-            let isCustom = false;
-            let courseData = null;
+            let courseName = ""; let isCustom = false; let courseData = null;
 
             if (selectVal === 'CUSTOM_ADD') {
                 courseName = document.getElementById('m-course-custom').value.trim();
@@ -768,7 +1149,6 @@
                 return;
             }
             
-            // Smart Holes Logic: Preserve existing holes if editing and the course hasn't changed
             let holes = [];
             if (editingMatchId && matchesCache[editingMatchId].course === courseName) {
                 holes = matchesCache[editingMatchId].holes;
@@ -785,7 +1165,7 @@
                 matchUp: document.getElementById('m-matchup').value,
                 teamA: document.getElementById('m-teamA').value,
                 teamB: document.getElementById('m-teamB').value,
-                video: courseData && !editingMatchId ? (courseData.video || "") : document.getElementById('m-video').value, // Allow custom video override on edit
+                video: courseData && !editingMatchId ? (courseData.video || "") : document.getElementById('m-video').value,
                 holes: holes,
                 pendingData: isCustom, 
                 updatedAt: new Date().toISOString()
@@ -801,12 +1181,12 @@
             ['m-date', 'm-time', 'm-matchup', 'm-teamA', 'm-teamB', 'm-video', 'm-course-custom'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('course-lookup-status').innerText = "";
             editingMatchId = null;
-            
             closeModal('match-modal');
             btn.innerText = "Save Match to Trip"; btn.disabled = false;
             fetchDashboardData();
         });
 
+        // Initialize App
         boot();
     </script>
 </body>
