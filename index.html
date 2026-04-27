@@ -445,6 +445,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, addDoc, collection, getDocs, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app-check.js";
         // Import Vertex AI SDK for production use
         import { getVertexAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-vertexai.js";
 
@@ -459,6 +460,23 @@
         };
         
         const app = initializeApp(firebaseConfig);
+
+        // --- APP CHECK CONFIGURATION ---
+        // To use Vertex AI securely after enforcing it, you must initialize App Check.
+        // 1. Go to Google Cloud Console -> reCAPTCHA Enterprise -> Create Key (Web)
+        // 2. Add the Site Key below.
+        try {
+            if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+                self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+            }
+            initializeAppCheck(app, {
+                provider: new ReCaptchaEnterpriseProvider('REPLACE_WITH_YOUR_RECAPTCHA_SITE_KEY_HERE'),
+                isTokenAutoRefreshEnabled: true
+            });
+        } catch (e) {
+            console.log("App Check initialization error (Expected if key is missing):", e);
+        }
+
         const auth = getAuth(app);
         const db = getFirestore(app);
         
@@ -812,7 +830,7 @@
                 const errorBanner = document.createElement('div');
                 errorBanner.id = 'ai-error-banner';
                 errorBanner.className = "bg-rose-50 text-rose-700 p-4 rounded-xl mb-6 text-sm font-medium border border-rose-200 text-left max-w-6xl mx-auto";
-                errorBanner.innerHTML = `<strong class="font-bold uppercase tracking-widest text-[10px] block mb-1 text-rose-800">AI Connection Rejected</strong> Firebase rejected the AI request. Displaying fallback data.<br><code class="text-xs mt-1 block opacity-80">${error.message}</code><p class="text-xs mt-2 italic text-rose-800 font-bold">Fix: Ensure your Firebase project is on the Blaze plan and the "Vertex AI API" is enabled in Google Cloud Console.</p>`;
+                errorBanner.innerHTML = `<strong class="font-bold uppercase tracking-widest text-[10px] block mb-1 text-rose-800">AI Connection Rejected</strong> Firebase rejected the AI request. Displaying fallback data.<br><code class="text-xs mt-1 block opacity-80">${error.message}</code><p class="text-xs mt-2 italic text-rose-800 font-bold">Fix: You need to add your ReCAPTCHA Enterprise Site Key to the code, OR temporarily "Un-enforce" App Check for Vertex AI in your Firebase Console.</p>`;
                 cardsContainer.parentElement.insertBefore(errorBanner, cardsContainer);
 
                 // Fallback to 5 options so UI doesn't break
