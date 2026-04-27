@@ -756,8 +756,9 @@
             try {
                 if (!vertexAI) throw new Error("Vertex AI SDK not initialized. Ensure Firebase is configured correctly.");
                 
+                // Using the latest recommended model for 2026
                 const model = getGenerativeModel(vertexAI, {
-                    model: "gemini-1.5-flash",
+                    model: "gemini-2.5-flash",
                     generationConfig: {
                         responseMimeType: "application/json",
                         responseSchema: {
