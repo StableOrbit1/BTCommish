@@ -47,15 +47,19 @@
 </head>
 <body class="text-navy antialiased min-h-screen flex flex-col items-center py-10 px-4">
 
+    <!-- Hidden Div to force Tailwind to compile dynamic colors used in JS logic -->
     <div class="hidden bg-emerald-100 text-emerald-700 border-emerald-200 bg-amber-100 text-amber-700 border-amber-200 bg-rose-100 text-rose-700 border-rose-200 text-rose-900 border-slate-800"></div>
 
+    <!-- Loading State -->
     <div id="loading-state" class="text-center fade-in mt-32">
         <h2 class="font-display uppercase tracking-wide text-3xl text-btgreen animate-pulse mb-2">Connecting to Headquarters...</h2>
         <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">Authenticating Commissioner</p>
     </div>
 
+    <!-- STATE 1: GATEWAY -->
     <div id="gateway-state" class="hidden w-full max-w-6xl fade-in mt-6">
         <div class="text-center mb-10">
+            <!-- Brand Logo -->
             <img src="logo_planner.png" alt="BoysTrip Logo" class="w-full max-w-[28rem] mx-auto mb-4 drop-shadow-sm" onerror="this.style.display='none'; document.getElementById('fallback-title').classList.remove('hidden');">
             <h1 id="fallback-title" class="font-display text-5xl md:text-6xl uppercase tracking-tight text-navy mb-2 font-bold hidden">BoysTrip</h1>
             
@@ -65,6 +69,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             
+            <!-- OPTION 1: Edit Existing -->
             <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-md flex flex-col h-[28rem] relative overflow-hidden group">
                 <div class="mb-4">
                     <span class="bg-slate-100 text-slate-500 font-black text-[10px] px-3 py-1.5 rounded-md tracking-widest uppercase">Option 1</span>
@@ -86,6 +91,7 @@
                 </div>
             </div>
 
+            <!-- OPTION 2: Add Planned -->
             <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-md flex flex-col h-[28rem] relative overflow-hidden group">
                 <div class="mb-4">
                     <span class="bg-slate-100 text-slate-500 font-black text-[10px] px-3 py-1.5 rounded-md tracking-widest uppercase">Option 2</span>
@@ -100,7 +106,9 @@
                 </div>
             </div>
 
+            <!-- OPTION 3: Discover -->
             <div onclick="startSurvey()" class="bg-navy rounded-2xl p-8 border-2 border-transparent hover:border-btgreen shadow-xl flex flex-col h-[28rem] relative overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all hover:shadow-[0_10px_40px_rgba(16,185,129,0.2)]">
+                <!-- Mini Globe -->
                 <div class="absolute inset-0 z-0 overflow-hidden rounded-2xl">
                     <div id="mini-globe-container" class="absolute -top-10 -right-10 w-96 h-96 opacity-50 group-hover:opacity-80 transition-opacity"></div>
                 </div>
@@ -110,7 +118,7 @@
                 </div>
                 <div class="relative z-10">
                     <h2 class="font-display text-3xl uppercase tracking-wide text-white font-bold mb-2 leading-tight">Discover & Build</h2>
-                    <p class="text-slate-400 text-xs leading-relaxed">Use the BoysTrip Concierge AI to find, plan, and procure the ultimate elite destination.</p>
+                    <p class="text-slate-400 text-xs leading-relaxed">Use the BoysTrip Concierge AI to design and procure the ultimate elite destination.</p>
                 </div>
 
                 <div class="relative z-10 mt-auto pt-4 border-t border-slate-800">
@@ -123,7 +131,9 @@
         </div>
     </div>
 
+    <!-- STATE 2: SURVEY WIZARD -->
     <div id="survey-state" class="hidden w-full max-w-2xl fade-in mt-10">
+        <!-- Progress Bar -->
         <div class="mb-8">
             <div class="flex justify-between items-center mb-2">
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">BoysTrip Concierge</span>
@@ -141,7 +151,8 @@
             </div>
             
             <div id="survey-questions-container" class="p-8 space-y-8 slide-up">
-                </div>
+                <!-- Dynamically Injected Questions -->
+            </div>
             
             <div class="p-6 bg-slate-50 border-t border-slate-200 flex justify-between">
                 <button id="btn-survey-prev" onclick="prevSurveyStep()" class="px-6 py-3 text-slate-500 hover:text-navy font-bold uppercase tracking-widest text-xs transition invisible">Back</button>
@@ -150,6 +161,7 @@
         </div>
     </div>
 
+    <!-- STATE 3: RECOMMENDATIONS 3D -->
     <div id="recommendations-state" class="hidden w-full max-w-5xl fade-in mt-6">
         <div class="text-center mb-8 relative">
             <button onclick="document.getElementById('recommendations-state').classList.add('hidden'); document.getElementById('survey-state').classList.remove('hidden');" class="absolute left-0 top-2 text-slate-400 hover:text-navy text-[10px] font-bold uppercase tracking-widest border border-slate-300 bg-white px-3 py-1 rounded transition-colors">← Refine Answers</button>
@@ -159,13 +171,17 @@
 
         <div id="main-globe-container" class="w-full h-64 md:h-96 rounded-2xl overflow-hidden mb-8 bg-navy border border-slate-800 shadow-lg relative cursor-move">
             <div class="absolute inset-0 z-10 pointer-events-none shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]"></div>
-            </div>
+            <!-- ThreeJS Injected Here -->
+        </div>
 
         <div id="recommendation-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            </div>
+            <!-- Dynamically Injected Cards -->
+        </div>
     </div>
 
+    <!-- STATE 3.5: SAMPLE AGENDA / PROCUREMENT -->
     <div id="agenda-state" class="hidden w-full max-w-4xl fade-in mt-6">
+        <!-- header -->
         <div class="text-center mb-8 relative">
             <button onclick="document.getElementById('agenda-state').classList.add('hidden'); document.getElementById('recommendations-state').classList.remove('hidden');" class="absolute left-0 top-0 text-slate-400 hover:text-navy text-[10px] font-bold uppercase tracking-widest border border-slate-300 px-3 py-1 rounded transition-colors bg-white shadow-sm">← Back</button>
             <p class="text-btgreen tracking-[0.3em] uppercase text-[10px] font-black mb-2">Component Procurement</p>
@@ -173,6 +189,7 @@
             <p class="text-slate-500 text-sm">Secure your tee times and accommodations before initializing the trip database.</p>
         </div>
 
+        <!-- Curator Banner -->
         <div class="bg-navy rounded-2xl p-6 mb-8 shadow-md flex flex-col md:flex-row items-center justify-between border-l-4 border-btgreen">
             <div class="mb-4 md:mb-0 text-left">
                 <h3 class="font-display text-2xl uppercase tracking-wide text-white font-bold mb-1 flex items-center gap-2"><span>🛡️</span> Certified BoysTrip Curator</h3>
@@ -182,7 +199,8 @@
         </div>
 
         <div id="agenda-days-container" class="space-y-6">
-            </div>
+            <!-- Rendered via JS -->
+        </div>
 
         <div class="mt-8 text-center pt-8 border-t border-slate-200">
             <button id="btn-proceed-builder" class="w-full md:w-auto px-10 py-5 bg-navy hover:bg-slate-800 text-white rounded-xl font-black uppercase tracking-widest transition-all shadow-md active:scale-95 text-sm">
@@ -192,6 +210,7 @@
     </div>
 
 
+    <!-- STATE 4: THE BUILDER FORM -->
     <div id="builder-state" class="hidden w-full max-w-xl bg-white rounded-2xl shadow-md overflow-hidden fade-in border border-slate-200 mt-10">
         <div class="bg-navy p-8 text-center border-b-4 border-btgreen relative">
             <button onclick="goBackFromBuilder()" class="absolute left-6 top-6 text-slate-400 hover:text-white text-[10px] font-bold uppercase tracking-widest border border-slate-700 px-3 py-1 rounded transition-colors">← Back</button>
@@ -240,6 +259,7 @@
         </div>
     </div>
 
+    <!-- STATE 5: THE DASHBOARD -->
     <div id="dashboard-state" class="hidden w-full max-w-5xl fade-in mt-6">
         
         <div class="bg-navy rounded-2xl shadow-md p-8 mb-8 text-center border border-slate-800 flex flex-col md:flex-row items-center justify-between relative">
@@ -281,10 +301,13 @@
         </div>
     </div>
 
+    <!-- MODALS -->
+    <!-- MODAL: Hire a Curator -->
     <div id="curator-modal" class="hidden fixed inset-0 z-[600] bg-navy/90 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col relative transition-all duration-300">
             <button onclick="closeModal('curator-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-navy text-2xl font-black z-10 leading-none">&times;</button>
             
+            <!-- Input State -->
             <div id="curator-form-state" class="p-8 text-center pt-10 fade-in">
                 <div class="inline-block p-4 rounded-full bg-emerald-100 text-emerald-600 mb-4 shadow-inner">
                     <span class="text-3xl">🎩</span>
@@ -295,6 +318,7 @@
                 <button onclick="submitCuratorRequest()" class="w-full py-4 bg-navy hover:bg-slate-800 text-white rounded-xl font-black uppercase tracking-widest text-xs transition shadow-md active:scale-95">Summon Curator</button>
             </div>
 
+            <!-- Success State -->
             <div id="curator-success-state" class="hidden p-8 text-center pt-10 fade-in">
                 <div class="inline-block p-4 rounded-full bg-emerald-50 text-btgreen mb-4 border border-emerald-100">
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -306,6 +330,7 @@
         </div>
     </div>
 
+    <!-- MODAL: Confirm Delete -->
     <div id="delete-modal" class="hidden fixed inset-0 z-[400] bg-navy/90 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col text-center">
             <div class="p-6 pt-10">
@@ -323,6 +348,7 @@
         </div>
     </div>
 
+    <!-- MODAL: Add Itinerary Day -->
     <div id="itinerary-modal" class="hidden fixed inset-0 z-[300] bg-navy/90 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -358,6 +384,7 @@
         </div>
     </div>
 
+    <!-- MODAL: Add Match -->
     <div id="match-modal" class="hidden fixed inset-0 z-[300] bg-navy/90 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -395,6 +422,7 @@
         </div>
     </div>
 
+    <!-- MODAL: Edit Crew -->
     <div id="crew-modal" class="hidden fixed inset-0 z-[300] bg-navy/90 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -417,6 +445,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, addDoc, collection, getDocs, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Import Vertex AI SDK for production use
+        import { getVertexAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-vertexai.js";
 
         // --- 1. FIREBASE CONFIG ---
         const firebaseConfig = {
@@ -431,6 +461,14 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        // Initialize Vertex AI
+        let vertexAI;
+        try {
+            vertexAI = getVertexAI(app);
+        } catch (e) {
+            console.log("Vertex AI not fully initialized. Check Firebase console settings.");
+        }
 
         // --- 2. GLOBAL STATE ---
         let activeTripId = null;
@@ -496,6 +534,13 @@
         ];
 
         // --- 3. SURVEY WIZARD LOGIC ---
+        window.startSurvey = () => {
+            document.getElementById('gateway-state').classList.add('hidden');
+            document.getElementById('survey-state').classList.remove('hidden');
+            currentSurveyStep = 0;
+            renderSurveyStep();
+        };
+
         const surveyThemes = [
             {
                 title: "The Logistics",
@@ -523,13 +568,6 @@
                 ]
             }
         ];
-
-        window.startSurvey = () => {
-            document.getElementById('gateway-state').classList.add('hidden');
-            document.getElementById('survey-state').classList.remove('hidden');
-            currentSurveyStep = 0;
-            renderSurveyStep();
-        };
 
         function renderSurveyStep() {
             const theme = surveyThemes[currentSurveyStep];
@@ -589,7 +627,7 @@
         };
 
         window.prevSurveyStep = () => { if (currentSurveyStep > 0) { currentSurveyStep--; renderSurveyStep(); } };
-        window.nextSurveyStep = () => { if (currentSurveyStep < surveyThemes.length - 1) { currentSurveyStep++; renderSurveyStep(); } else { generateRecommendations(); } };
+        window.nextSurveyStep = () => { if (currentSurveyStep < surveyThemes.length - 1) { currentSurveyStep++; renderSurveyStep(); } else { window.generateRecommendations(); } };
 
         // --- 4. RECOMMENDATION ENGINE & THREE.JS ---
         let mainGlobeRenderer, mainGlobeScene, mainGlobeCamera, mainGlobe;
@@ -664,26 +702,91 @@
             }, 30);
         }
 
-        function generateRecommendations() {
+        window.generateRecommendations = async () => {
             document.getElementById('survey-state').classList.add('hidden');
             document.getElementById('recommendations-state').classList.remove('hidden');
 
             const globeData = initGlobe('main-globe-container');
-            
-            // Logic based on survey
-            currentRecommendations = [];
-            if (surveyData.style === 'Desert' || surveyData.budget === 'Blank Check ($$$)') currentRecommendations.push(allDestinations[1]); // Desert
-            if (surveyData.style === 'Links/Coastal' || surveyData.intensity === '36 Holes/Day') {
-                currentRecommendations.push(allDestinations[0]); // Links
-                currentRecommendations.push(allDestinations[2]); // Bandon
-            }
-            if (currentRecommendations.length < 3) currentRecommendations.push(allDestinations[3]); // Monterey
-            if (currentRecommendations.length < 3) currentRecommendations.push(allDestinations[1]); // Fill with desert
-
-            currentRecommendations = currentRecommendations.slice(0, 3);
             const cardsContainer = document.getElementById('recommendation-cards');
-            cardsContainer.innerHTML = '';
+            
+            cardsContainer.innerHTML = `
+                <div class="col-span-1 md:col-span-3 text-center py-20 flex flex-col items-center">
+                    <div class="w-12 h-12 border-4 border-slate-200 border-t-btgreen rounded-full animate-spin mb-4"></div>
+                    <h3 class="font-display text-2xl text-navy uppercase tracking-wide">BoysTrip AI is Designing Your Tour...</h3>
+                    <p class="text-slate-500 text-sm mt-2">Analyzing courses, routing logistics, and vibe matching.</p>
+                </div>
+            `;
 
+            const prompt = `Design 3 unique, highly customized elite golf trips based on these preferences:
+                Travel Month: ${surveyData.targetDate || 'Flexible'}
+                Duration: ${surveyData.days || 5} days
+                Group Size: ${surveyData.crew || 8} players
+                Golf Intensity: ${surveyData.intensity || 'Mixed'}
+                Course Style: ${surveyData.style || 'Mix'}
+                Avg Handicap: ${surveyData.handicap || 12}
+                Lodging: ${surveyData.accommodation || 'Mixed'}
+                Nightlife: ${surveyData.nightlife || 'Mixed'}
+                Budget: ${surveyData.budget || 'Premium'}
+                Must-Haves: ${surveyData.nongolf || 'None specifically'}
+                
+                Return exactly 3 trips. Make them sound epic and masculine. Provide exactly 1 course per day of the trip length requested.`;
+
+            try {
+                if (!vertexAI) throw new Error("Vertex AI SDK not available");
+                
+                const model = getGenerativeModel(vertexAI, {
+                    model: "gemini-1.5-flash",
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    title: { type: "string" },
+                                    desc: { type: "string" },
+                                    lat: { type: "number" },
+                                    lon: { type: "number" },
+                                    color: { type: "string", description: "Hex color code e.g., #10b981" },
+                                    cities: { type: "array", items: { type: "string" } },
+                                    courses: {
+                                        type: "array",
+                                        items: {
+                                            type: "object",
+                                            properties: {
+                                                name: { type: "string" },
+                                                renowned: { type: "boolean" },
+                                                url: { type: "string" }
+                                            },
+                                            required: ["name", "renowned"]
+                                        }
+                                    }
+                                },
+                                required: ["title", "desc", "lat", "lon", "color", "cities", "courses"]
+                            }
+                        }
+                    }
+                });
+
+                const result = await model.generateContent(prompt);
+                const jsonText = result.response.text();
+                const aiResults = JSON.parse(jsonText);
+                
+                currentRecommendations = aiResults.map(trip => {
+                    let colorNum = 0x10b981; 
+                    if (trip.color && trip.color.startsWith('#')) {
+                        colorNum = parseInt(trip.color.replace('#', '0x'), 16);
+                    }
+                    return { ...trip, color: colorNum };
+                });
+            } catch (error) {
+                console.log("Using seamless local fallback. (Did you enable Vertex AI in Firebase Console?)");
+                let fallbacks = [...allDestinations];
+                if (surveyData.style === 'Desert') fallbacks = [allDestinations[1], allDestinations[1], allDestinations[1]]; 
+                currentRecommendations = fallbacks.sort(() => 0.5 - Math.random()).slice(0, 3);
+            }
+
+            cardsContainer.innerHTML = '';
             currentRecommendations.forEach((rec, idx) => {
                 if (globeData) addMarkerToGlobe(globeData.globe, rec.lat, rec.lon, rec.color);
                 
@@ -705,7 +808,7 @@
                     </div>
                 `;
             });
-        }
+        };
 
         // --- 4.5 AGENDA / PROCUREMENT VIEW ---
         function getBookingStatus(isRenowned, targetMonthStr) {
@@ -753,6 +856,7 @@
                         <h3 class="font-display text-xl uppercase tracking-wide font-bold text-navy mb-4 ml-2">Day ${i + 1} <span class="text-slate-400 text-sm ml-2 font-sans font-medium tracking-wide">| ${city}</span></h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 ml-2">
+                            <!-- Lodging -->
                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col h-full">
                                 <h4 class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2">Lodging</h4>
                                 <div class="mt-auto">
@@ -762,6 +866,7 @@
                                 </div>
                             </div>
                             
+                            <!-- Golf -->
                             <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 flex flex-col h-full">
                                 <div class="flex justify-between items-start mb-2">
                                     <h4 class="text-[10px] uppercase tracking-widest text-emerald-700 font-bold">Golf Match</h4>
@@ -769,10 +874,11 @@
                                 </div>
                                 <p class="font-bold text-navy text-sm mb-3">${course.name}</p>
                                 <div class="mt-auto">
-                                    <a href="${course.url}" target="_blank" class="inline-block text-[11px] font-bold text-emerald-700 hover:text-emerald-900 transition underline decoration-emerald-300 underline-offset-2">Book Tee Time &rarr;</a>
+                                    <a href="${course.url || '#'}" target="_blank" class="inline-block text-[11px] font-bold text-emerald-700 hover:text-emerald-900 transition underline decoration-emerald-300 underline-offset-2">Book Tee Time &rarr;</a>
                                 </div>
                             </div>
 
+                            <!-- Off-Course -->
                             <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col h-full">
                                 <h4 class="text-[10px] uppercase tracking-widest text-amber-700 font-bold mb-2">Off-Course</h4>
                                 <p class="text-xs text-amber-900 font-medium leading-relaxed mb-2">Explore the best <span class="font-bold">"${nonGolfPref}"</span> in the area.</p>
@@ -854,7 +960,14 @@
                 document.getElementById('gateway-state').classList.remove('hidden');
                 setTimeout(() => initGlobe('mini-globe-container', true), 100);
             } catch (err) {
-                document.getElementById('loading-state').innerHTML = `<p class="text-rose-500 font-bold">Authentication Failed. Check Firebase Rules.</p>`;
+                console.error(err);
+                document.getElementById('loading-state').innerHTML = `
+                    <h2 class="font-display uppercase tracking-wide text-2xl text-rose-500 mb-2">Authentication Blocked</h2>
+                    <p class="text-slate-500 text-xs uppercase tracking-widest font-bold mb-4">Firebase returned the following error:</p>
+                    <div class="max-w-md mx-auto bg-slate-50 border border-slate-200 rounded-xl p-4 text-left">
+                        <code class="text-[10px] text-rose-600 break-words">${err.message}</code>
+                    </div>
+                `;
             }
         }
 
